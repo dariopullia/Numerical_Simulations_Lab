@@ -1,3 +1,4 @@
 *.o
 *.exe
 JUPYTER_NOTEBOOK/
+.ipynb_checkpoints/
