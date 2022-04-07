@@ -17,15 +17,15 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 using namespace std;
 
 Random :: Random(){
-      int seed[4];
+   int seed[4];
    int p1, p2;
-   ifstream Primes("/home/dario/Uni_ubu/lsn/rangen/Primes");
+   ifstream Primes("../../rangen/Primes");
    if (Primes.is_open()){
       Primes >> p1 >> p2 ;
    } else cerr << "PROBLEM: Unable to open Primes" << endl;
    Primes.close();
 
-   ifstream input("/home/dario/Uni_ubu/lsn/rangen/seed.in");
+   ifstream input("../../rangen/seed.in");
    string property;
    if (input.is_open()){
       while ( !input.eof() ){
