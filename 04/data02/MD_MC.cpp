@@ -110,7 +110,7 @@ void Input(void)
   it = 1; //Temperature
   ik = 2; //Kinetic energy
   ie = 3; //Total energy
-  ip = 4; //Pressure
+  ipr = 4; //Pressure
   n_props = 5; //Number of observables
 
 //Read initial configuration
@@ -188,7 +188,7 @@ void Input(void)
   cout << "Initial temperature      = " << walker[it] << endl;
   cout << "Initial kinetic energy   = " << walker[ik]/(double)npart << endl;
   cout << "Initial total energy     = " << walker[ie]/(double)npart << endl;
-  cout << "Initial pressure     = " << walker[ip]/(double)npart << endl;
+  cout << "Initial pressure     = " << walker[ipr] << endl;
   return;
 }
 
@@ -339,10 +339,10 @@ void Measure() //Properties measurement
       {
         vij = 1.0/pow(dr,12) - 1.0/pow(dr,6);
         v += vij;
+
+        appo_per_pres += 48.0*(1.0/pow(dr,12) - 0.5/pow(dr,6));
+
       }
-
-      appo_per_pres+=48 *(1.0/pow(dr,12) - 0.5/pow(dr,6));
-
 
     }          
   }
@@ -353,7 +353,7 @@ void Measure() //Properties measurement
   walker[ik] = kin; // Kinetic energy
   walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
   walker[ie] = 4.0 * v + kin;  // Total energy;
-  walker[ip] =  rho*walker[it] + appo_per_pres/(3*vol*npart);  // Pressure;
+  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol*npart);  // Pressure;
   return;
 }
 
@@ -395,7 +395,7 @@ void Averages(int iblk) //Print results for current block
 {
     
    ofstream Epot, Ekin, Etot, Temp, Pres;
-   const int wd=12;
+   //const int wd=12;
     
     cout << "Block number " << iblk << endl;
     cout << "Acceptance rate " << accepted/attempted << endl << endl;
@@ -426,10 +426,10 @@ void Averages(int iblk) //Print results for current block
     glob_av2[it] += stima_temp*stima_temp;
     err_temp=Error(glob_av[it],glob_av2[it],iblk);
 
-    stima_pres = blk_av[ip]/blk_norm; //Pressure
-    glob_av[ip] += stima_pres;
-    glob_av2[ip] += stima_pres*stima_pres;
-    err_pres=Error(glob_av[ip],glob_av2[ip],iblk);
+    stima_pres = blk_av[ipr]/blk_norm; //Pressure
+    glob_av[ipr] += stima_pres;
+    glob_av2[ipr] += stima_pres*stima_pres;
+    err_pres=Error(glob_av[ipr],glob_av2[ipr],iblk);
 
 
 
@@ -442,7 +442,7 @@ void Averages(int iblk) //Print results for current block
 //Temperature
     Temp  << iblk <<  " " << stima_temp << " " << glob_av[it]/(double)iblk << " " << err_temp << endl;
 //Pressure
-    Pres  << iblk <<  " " << stima_pres << " " << glob_av[ip]/(double)iblk << " " << err_pres << endl;
+    Pres  << iblk <<  " " << stima_pres << " " << glob_av[ipr]/(double)iblk << " " << err_pres << endl;
 
 
     cout << "----------------------------" << endl << endl;
