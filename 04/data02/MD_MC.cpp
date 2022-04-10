@@ -32,7 +32,7 @@ int main()
       Move();
       Measure();
       Accumulate(); //Update block averages
-      if(istep%10 == 0){
+      if(istep%1000 == 0){
 //        ConfXYZ(nconf);//Write actual configuration in XYZ format //Commented to avoid "filesystem full"! 
         nconf += 1;
       }
