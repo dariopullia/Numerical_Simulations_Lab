@@ -1,2 +1,2 @@
-rm -rf *.dat
+rm -rf */*.dat
 rm -rf frames/*.xyz

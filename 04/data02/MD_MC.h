@@ -13,6 +13,7 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 
 //Random numbers
 #include "../../rangen/random.h"
+//int seed[4];
 Random rnd;
 
 //parameters, observables

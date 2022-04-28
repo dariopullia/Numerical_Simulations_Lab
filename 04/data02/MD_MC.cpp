@@ -18,11 +18,18 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 
 using namespace std;
 
+string stato;
 
-
-int main()
+int main(int argc,char* argv[])
 { 
+  stato=argv[1];
+  if (argc!=1 and stato!="gas" and stato!="solid" and stato!="liquid" ){
+    cout<<"Esplicita bene lo stato! (gas/liquid/solid)"<<endl;
+    return 0;
+  }
+    
   Input(); //Inizialization
+
   int nconf = 1;
   for(int iblk=1; iblk <= nblk; iblk++) //Simulation
   {
@@ -55,23 +62,23 @@ void Input(void)
   cout << "The program uses Lennard-Jones units " << endl;
 
 //Read seed for random numbers
-  /*
-
+  
+/*
   int p1, p2;
-  Primes.open("Primes");
+  Primes.open("../../rangen/Primes");
   Primes >> p1 >> p2 ;
   Primes.close();
-  */
+*/
 
 
 //Read input informations
-  ReadInput.open("input.in");
+  ReadInput.open(stato+"/input.in");
 
   ReadInput >> iNVET;
   ReadInput >> restart;
   /*
   if(restart) Seed.open("seed.out");
-  else Seed.open("seed.in");
+  else Seed.open("../../rangen/seed.in");
   Seed >> seed[0] >> seed[1] >> seed[2] >> seed[3];
   rnd.SetRandom(seed,p1,p2);
   Seed.close();
@@ -113,12 +120,12 @@ void Input(void)
   ipr = 4; //Pressure
   n_props = 5; //Number of observables
 
-//Read initial configuration
+// initial configuration
   cout << "Read initial configuration" << endl << endl;
   if(restart)
   {
-    ReadConf.open("config.out");
-    ReadVelocity.open("velocity.out");
+    ReadConf.open(stato+"/config.out");
+    ReadVelocity.open(stato+"/velocity.out");
     for (int i=0; i<npart; ++i) ReadVelocity >> vx[i] >> vy[i] >> vz[i];
   }
   else 
@@ -400,11 +407,11 @@ void Averages(int iblk) //Print results for current block
     cout << "Block number " << iblk << endl;
     cout << "Acceptance rate " << accepted/attempted << endl << endl;
     
-    Epot.open("output_epot.dat",ios::app);
-    Ekin.open("output_ekin.dat",ios::app);
-    Temp.open("output_temp.dat",ios::app);
-    Etot.open("output_etot.dat",ios::app);
-    Pres.open("output_pres.dat",ios::app);    
+    Epot.open(stato+"/output_epot.dat",ios::app);
+    Ekin.open(stato+"/output_ekin.dat",ios::app);
+    Temp.open(stato+"/output_temp.dat",ios::app);
+    Etot.open(stato+"/output_etot.dat",ios::app);
+    Pres.open(stato+"/output_pres.dat",ios::app);    
     
     stima_pot = blk_av[iv]/blk_norm/(double)npart; //Potential energy
     glob_av[iv] += stima_pot;
@@ -460,8 +467,8 @@ void ConfFinal(void)
   ofstream WriteConf, WriteVelocity, WriteSeed;
 
   cout << "Print final configuration to file config.out" << endl << endl;
-  WriteConf.open("config.out");
-  WriteVelocity.open("velocity.out");
+  WriteConf.open(stato+"/config.out");
+  WriteVelocity.open(stato+"/velocity.out");
   for (int i=0; i<npart; ++i)
   {
     WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
@@ -476,7 +483,7 @@ void ConfFinal(void)
 void ConfXYZ(int nconf){ //Write configuration in .xyz format
   ofstream WriteXYZ;
 
-  WriteXYZ.open("frames/config_" + to_string(nconf) + ".xyz");
+  WriteXYZ.open(stato+"/frames/config_" + to_string(nconf) + ".xyz");
   WriteXYZ << npart << endl;
   WriteXYZ << "This is only a comment!" << endl;
   for (int i=0; i<npart; ++i){
