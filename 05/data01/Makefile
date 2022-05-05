@@ -4,8 +4,8 @@ CFLAGS = -Wall -O3 --std=c++11
 esegui: main.exe
 	./main.exe
 
-main.exe : main.o /home/dario/Uni_ubu/lsn/rangen/random.o /home/dario/Uni_ubu/lsn/05/data01/metropolis.o
-	$(CC) /home/dario/Uni_ubu/lsn/rangen/random.o main.o /home/dario/Uni_ubu/lsn/05/data01/metropolis.o -o main.exe
+main.exe : main.o /home/dario/Uni_ubu/lsn/rangen/random.o metropolis.o
+	$(CC) /home/dario/Uni_ubu/lsn/rangen/random.o main.o metropolis.o -o main.exe
 main.o : main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
 /home/dario/Uni_ubu/lsn/rangen/random.o : /home/dario/Uni_ubu/lsn/rangen/random.cpp /home/dario/Uni_ubu/lsn/rangen/random.h
@@ -13,5 +13,5 @@ main.o : main.cpp
 clean :
 	rm /home/dario/Uni_ubu/lsn/rangen/*.o main.exe seed.out
 
-/home/dario/Uni_ubu/lsn/05/data01/metropolis.o : /home/dario/Uni_ubu/lsn/05/data01/metropolis.cpp /home/dario/Uni_ubu/lsn/05/data01/metropolis.h
-	$(CC) -c /home/dario/Uni_ubu/lsn/05/data01/metropolis.cpp -o /home/dario/Uni_ubu/lsn/05/data01/metropolis.o $(CFLAGS)
+metropolis.o : metropolis.cpp metropolis.h
+	$(CC) -c metropolis.cpp -o metropolis.o $(CFLAGS)

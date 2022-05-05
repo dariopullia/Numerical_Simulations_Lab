@@ -34,6 +34,7 @@ int main (int argc, char *argv[]){
    start[0]=10.0;
    start[1]=0.0;
    start[2]=0.0;
+   //Posiziono i punti alla posizione iniziale e ne imposto il passo
    metro100_unif.setPos(start);
    metro210_unif.setPos(start);
    metro100_gauss.setPos(start);
@@ -50,6 +51,7 @@ int main (int argc, char *argv[]){
       sum_210_gauss=0;
 
       for (int j=0; j<L; j++){
+         //Faccio un passo in modalità uniforme (0) e in modalità gaussiana (1)
          metro100_unif.step_PSI100(0);
          metro100_gauss.step_PSI100(1);
          metro210_unif.step_PSI210(0);
@@ -59,7 +61,7 @@ int main (int argc, char *argv[]){
          sum_210_unif+=metro210_unif.getR();
          sum_210_gauss+=metro210_gauss.getR();
 
-         if (j%400==0){
+         if (j%400==0){ //Estraggo dei punti per il grafico 3D
             start=metro100_gauss.getPos();
             out2<<start[0]<<" "<<start[1]<<" "<<start[2]<<" ";
             start=metro210_gauss.getPos();
