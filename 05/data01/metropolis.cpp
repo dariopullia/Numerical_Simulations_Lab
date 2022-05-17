@@ -9,6 +9,8 @@ using namespace std;
 Metropolis :: Metropolis(int dime){
     dim =dime;
     step=1.0;
+    tentate=0;
+    accettate=0;
     pos=new double[dime];
     for (int i=0; i<dime;i++){
         pos[i]=0.0;
@@ -29,6 +31,11 @@ double Metropolis :: getR() {
     }
     return sqrt(r2);
 }
+double Metropolis :: getAccRate() {
+
+    return (double)accettate/tentate;
+
+}
 
 
 double* Metropolis :: getPos() {
@@ -45,6 +52,14 @@ void Metropolis :: setPos(double* posi){
     }
 
 }
+
+void Metropolis :: resetAccRate(){
+    accettate=0;
+    tentate=0;
+
+}
+
+
 
 void Metropolis :: setStep(double s){
     step=s;
@@ -76,14 +91,16 @@ void Metropolis :: step_PSI100(int op){
 
     if (pnew>pold){
         delete[] pos;
-        pos=newpos;        
+        pos=newpos;
+        accettate++;        
     }else{
         if (rnd.Rannyu()<pnew/pold){
             delete[] pos;
             pos=newpos;        
+            accettate++;        
         }
     }
-    
+    tentate++;
 }
 
 void Metropolis :: step_PSI210(int op){
@@ -116,10 +133,14 @@ void Metropolis :: step_PSI210(int op){
     if (pnew>pold){
         delete[] pos;
         pos=newpos;        
+        accettate++;
     }else{
         if (rnd.Rannyu()<pnew/pold){
             delete[] pos;
             pos=newpos;        
+            accettate++;
         }
     }
+
+    tentate++;
 }
