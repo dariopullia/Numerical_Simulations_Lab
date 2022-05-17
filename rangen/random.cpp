@@ -97,7 +97,19 @@ double Random :: Rannyu(void){
 
   return r;
 }
+void Random :: SetPrimesComb(int n){
+   int p1, p2;
+   ifstream Primes("../../rangen/Primes");
+   if (Primes.is_open()){
+      for (int i=0; i<1+n;i++)      Primes >> p1 >> p2 ;
+   } else cerr << "PROBLEM: Unable to open Primes" << endl;
+   Primes.close();
 
+  n3 = p1;
+  n4 = p2;
+
+  return;
+}
 void Random :: SetRandom(int * s, int p1, int p2){
   m1 = 502;
   m2 = 1521;

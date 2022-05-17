@@ -25,6 +25,7 @@ public:
   ~Random();
   // methods
   void SetRandom(int * , int, int);
+  void SetPrimesComb(int);
   void SaveSeed();
   double Rannyu(void);
   double Rannyu(double min, double max);
