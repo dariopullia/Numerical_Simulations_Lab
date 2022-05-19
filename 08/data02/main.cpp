@@ -17,9 +17,6 @@ double Eold, sigmaEold;
 Random rnd;
 double sum; 
 
-int M=100000;
-int N=100;  //numero di blocchi
-int L=1000;
 
 double error_prog(double AV, double AV2, int n){
    if (n==0){
@@ -33,10 +30,16 @@ double error_prog(double AV, double AV2, int n){
 
 void MeasureH(Metropolis metro, double beta){
    //Posiziono i punti alla posizione iniziale e ne imposto il passo
-   metroPSI.setMuSig(metro.getMu()+rnd.Rannyu(-1,1)/beta,metro.getSig()+rnd.Rannyu(-1,1)/beta);
+   int M=100000;
+   int N=100;  //numero di blocchi che AL MASSIMO accetto
+   int L=M/N;
+   
+   metroPSI.setMuSig(metro.getMu()+rnd.Rannyu(-1,1)/beta,metro.getSig()+rnd.Rannyu(-1,1)/beta); // Il range -1,1 è completamente arbitrario, questa scelta sembra ragionevole ma potrei scegliere di dargli più o meno libertà
    double E=0; 
    double E2=0;
-   for (int i=0; i<N; i++){
+   /*
+   for (int i=0; (i<N); i++){
+      cout<<"ciclo Inf? "<<i<<endl;
       sum=0;
 
       for (int j=0; j<L; j++){
@@ -55,8 +58,35 @@ void MeasureH(Metropolis metro, double beta){
       //out<<E<<" "<<error_prog(E, E2,i)<<endl;
 
    }
+   */
+   int i=0;
+   metroPSI.resetAccRate();
+
+   do
+   {
+
+   sum=0;
+   for (int j=0; j<L; j++){
+      metroPSI.step_PSI();
+      sum+=metroPSI.getEnergy();
+      //if (i==0) cout<<sum/j<<" "<< metroPSI.getEnergy()<<" "<<metroPSI.getPos()<<endl;
+
+   }
+
+   E=(sum/L+E*(i))/(i+1);
+
+   E2=((sum/L)*(sum/L)+E2*(i))/(i+1);
+   i++;  
+   //cout<<E<<" "<<abs(error_prog(E, E2,i)/E)<<endl;
+   //cout<<"ciclo Inf? "<<i<<endl;
+   } while (i==1 or (i<N and abs(error_prog(E, E2,i)/E)>0.01));
+   //} while (i<N);
+
+   //cout<<"ciclo Inf? "<<i<<endl;
+   //cout<<metroPSI.getAccRate()<<" "<<beta<<endl;
+   
    Enew=E;
-   sigmaEnew=error_prog(E, E2,N-1);
+   sigmaEnew=error_prog(E, E2,i);
 
 }
 
@@ -67,6 +97,8 @@ void MeasureH(Metropolis metro, double beta){
 int main (int argc, char *argv[]){
    ofstream out("data02.dat");
    ofstream outMuSig("data02_MuSig.dat");
+   ofstream outMuSigFinal("data02_MuSigFinal.dat");
+   ofstream outMuSigInstant("data02_MuSigInstant.dat");
 
    double beta=1;
    double mu, mu2, sig, sig2;
@@ -76,26 +108,26 @@ int main (int argc, char *argv[]){
    MeasureH(metroPSI, beta);
    oldmetroPSI=metroPSI;
    Eold=Enew;
-
+   int acc=0, tent=0;
 
       //while (abs(sigmaEprog/Eprog)>0.005){ //Ciclo in modo da finire con un errore relativo a mia scelta
-      for (int i=0; i<100; i++){
-         beta+=1;
-         sum1=0;
-         sum2=0;
-         for (int i=0; i<10; i++){//Evolvo 10 volte per temperatura, dando il tempo di raffreddarsi
-         musum=0, sigsum=0;
+      for (int i=0; i<50; i++){ //Scelgo arbitrariamente quanti cicli fare perchè ogni ciclo aumento beta, che è inversamente proporzionale al range di valori (circa l'errore) che Mu e Sigma possono valere. 
+         beta+=1.5;
+         acc=0, tent=0;
+         for (int i=0; i<40; i++){//Evolvo 40 volte per temperatura, dando il tempo di raffreddarsi
          MeasureH(metroPSI, beta);
 
          if (Enew<Eold){ //Metropolis
             oldmetroPSI=metroPSI;
             Eold=Enew;
             sigmaEold=sigmaEnew;
+            acc++;
             }else{
                if (rnd.Rannyu()<exp((Eold-Enew)*beta)){
                   oldmetroPSI=metroPSI;
                   Eold=Enew;
                   sigmaEold=sigmaEnew;
+                  acc++;
                   //cout<<"Accetto"<<endl;
 
                }else{
@@ -104,19 +136,79 @@ int main (int argc, char *argv[]){
 
                }
             }//fine Metropolis
+            tent++;
 
-         
-         sum1+=Eold;
-         sum2+=Eold*Eold;
-
-         out<<Eold<<" "<<sigmaEold<<endl;
-         outMuSig<<metroPSI.getMu()<<" "<<metroPSI.getSig()<<endl;
          }
-         Eprog=sum1/10;
-         E2prog=sum2/10;
-         sigmaEprog=error_prog(Eprog, E2prog, 10);
-         cout<<Eprog<<" "<<sigmaEprog<<endl;
+         outMuSig<<metroPSI.getMu()<<" "<<metroPSI.getSig()<<endl;
+         //cout<<"Energia: "<<Eold<<" "<<sigmaEold<<endl;
+         out<<Eold<<" "<<sigmaEold<<endl;
+         cout<<"Acc Rate: "<<(double) acc/tent<<"  beta: "<<beta<<endl;
       }
+
+
+   cout<<"Energia: "<<Eold<<" "<<sigmaEold<<endl;
    cout<<"Mu e sigma: "<<metroPSI.getMu()<<" "<<metroPSI.getSig()<<endl;
+
+   cout<<"Fissato questo beta, mi muovo per trovare la StDev di Mu e Sigma"<<endl;
+
+   int M=40000;
+   int N=100;
+   int L=M/N;
+
+   for (int i=0; (i<N); i++){
+      musum=0, sigsum=0;
+      for (int j=0; j<L; j++){
+         metroPSI.setMuSig(metroPSI.getMu()+rnd.Rannyu(-1,1)/beta,metroPSI.getSig()+rnd.Rannyu(-1,1)/beta); // Il range -1,1 è completamente arbitrario, questa scelta sembra ragionevole ma potrei scegliere di dargli più o meno libertà
+
+         MeasureH(metroPSI, beta);
+
+         if (Enew<Eold){ //Metropolis
+            oldmetroPSI=metroPSI;
+            Eold=Enew;
+            sigmaEold=sigmaEnew;
+            acc++;
+            }else{
+               if (rnd.Rannyu()<exp((Eold-Enew)*beta)){
+                  oldmetroPSI=metroPSI;
+                  Eold=Enew;
+                  sigmaEold=sigmaEnew;
+                  acc++;
+                  //cout<<"Accetto"<<endl;
+
+               }else{
+                  metroPSI=oldmetroPSI;
+                  //cout<<"Rifiuto"<<endl;
+
+               }
+            }//fine Metropolis
+            tent++;
+            musum +=oldmetroPSI.getMu();
+            sigsum +=oldmetroPSI.getSig();
+            outMuSigInstant<<oldmetroPSI.getMu()<<" "<<oldmetroPSI.getSig()<<endl;
+
+         //if (i==0) cout<<sum/j<<" "<< metroPSI.getEnergy()<<" "<<metroPSI.getPos()<<endl;
+
+      }
+
+
+      mu=(musum/L+mu*(i))/(i+1);
+
+      mu2=((musum/L)*(musum/L)+mu2*(i))/(i+1);
+      
+      sig=(sigsum/L+sig*(i))/(i+1);
+
+      sig2=((sigsum/L)*(sigsum/L)+sig2*(i))/(i+1);
+      
+      //cout<<E<<" "<<error_prog(E, E2,i)<<endl;
+      //cout<<"Acceptance Rate: "<<metroPSI.getAccRate()<<endl;
+      cout<<mu<<" "<<error_prog(mu, mu2,N)<<" "<<sig<<" "<<error_prog(sig, sig2,N)<<endl;
+
+      outMuSigFinal<<mu<<" "<<error_prog(mu, mu2,N)<<" "<<sig<<" "<<error_prog(sig, sig2,N)<<endl;
+}
+
+
+
+
+
    return 0;
 }

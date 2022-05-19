@@ -11,7 +11,7 @@ Metropolis :: Metropolis(){
     pos=0;
     accettato=0;
     tentato=0;
-    rnd.SetPrimesComb(32);
+    rnd.SetPrimesComb(123);//1 schifo, 3 bello
     return;
 }
 

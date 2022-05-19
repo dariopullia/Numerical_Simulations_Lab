@@ -88,7 +88,7 @@ void Metropolis :: spin_flip_gibbs(){
     double deltaE=-(-1*(pos[i-1]*pos[i]+pos[i]*pos[i+1])-h*0.5*(pos[i-1]+pos[i]+pos[i]+pos[i+1]))-(-1*(pos[i-1]*newpos+newpos*pos[i+1])-h*0.5*(pos[i-1]+newpos+newpos+pos[i+1]));
     E*=deltaE;
 
-    prob=exp(-E/T)/
+    //prob=exp(-E/T)/
 
 
 
