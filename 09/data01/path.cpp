@@ -11,6 +11,20 @@
 using namespace std;
 
 
+//-----------------FUNZIONE UTILE----------
+bool IsInVec(int n, int v[], int size ){
+    bool res=false;
+    for (int i=0; i<size; i++){
+        if (n==v[i]){
+            res=true;
+            break;
+        }
+    }
+    return res;
+}
+
+
+
 
 
 //------------------------ PATH----------------------
@@ -321,53 +335,64 @@ void Path :: Shift(int A, int B, int n){
 
 
 void Path :: Crossover(Path p, int A, int B){
-        int appo;
+    int appo;
     Town* pos=start;
     Town* ATown;
-    Town* BTown;
-    Town* memo;
+    Town* posnew=p.GetStart();
+
     if (A>B){
     appo=A;
     A=B;
     B=appo;
     }
+    appo=B-A+1;
 
     if (B-A>=dim-1){
+
+
         return;
     }
+    int toreplace[appo];
 
     for (int i=0; i<A;i++){
     //pos->print();
     pos=pos->GetNext();   
     } 
-    appo=B-A;
     ATown=pos;
+    toreplace[0]=ATown->GetID();
     for (int i=0; i<appo;i++){
         pos=pos->GetNext();
+        toreplace[i+1]=pos->GetID();
     }
-    BTown=pos;
+   
 
+    pos=ATown;
+    for(int i=0; i<appo;i++){
+        while (!IsInVec(posnew->GetID(), toreplace, appo))
+        {
+            posnew=posnew->GetNext();
+        }
+        pos->SetID(posnew->GetID());
+        pos->SetX(posnew->GetX());
+        pos->SetY(posnew->GetY());
+        posnew=posnew->GetNext();
+        pos=pos->GetNext();
 
-    //Tolgo il segmento
-    ATown->GetPrevious()->SetNext(BTown->GetNext()); 
-    BTown->GetNext()->SetPrevious(ATown->GetPrevious()); 
-    //--
-
-
-
+    }
+    this->Fix();
 }
 
 void Manager :: Try(){
 
     /*
     int J,K,N;
-    double ParaArb=1;
+    double ExpCoef=1;
     for (int z=0; z<1000000;z++){    
         for (int i=0; i<npaths; i++){
 
-            J=(int)rnd.Exp(ParaArb);
-            K=ParaArb+(int)rnd.Exp(ParaArb);
-            N=(int)rnd.Exp(ParaArb);
+            J=(int)rnd.Exp(ExpCoef);
+            K=ExpCoef+(int)rnd.Exp(ExpCoef);
+            N=(int)rnd.Exp(ExpCoef);
 
 
             //paths[i]->shortPrint();
@@ -397,23 +422,19 @@ void Manager :: Try(){
     //this->shortPrint(10);
 
 
-    for (int i=0; i<npaths; i++){
+    for (int i=1; i<npaths; i++){
 
         //paths[i]->shortPrint();
 
         //cout<<i<<endl;
         //paths[i]->Invert(0,10)
+        paths[0]->shortPrint();
         paths[i]->shortPrint();
-
-        paths[i]->Shift(0,9,1);
+        paths[i]->Crossover(paths[0][0],0,0);
         paths[i]->MeasureLen();
         paths[i]->shortPrint();
 
     }
-
-
-
-
 
 
 
@@ -423,7 +444,7 @@ void Manager :: Try(){
 
 
 
-//-----------------------MANAGER-------------------
+//------------------------------------------MANAGER----------------------------------------
 
 
 
@@ -461,7 +482,7 @@ Path* Manager :: CreateRandomPath(){
 
 Manager :: Manager(int d){
     dim=d;
-    npaths=1000;
+    npaths=2;
     Xregion = new double [d];
     Yregion = new double [d];
     rnd.SetPrimesComb(3);
@@ -592,36 +613,51 @@ void Manager :: shortPrint(int n){
 void Manager :: Mutate(){
     Path** newpaths= new Path*[npaths];
     int o;
-    double ParaArb=0.1;
+    double ExpCoef=0.1;
+    double Espo=0.1;
+    double ShiftMean=0;
+    double ShiftSig=5;
     double rand; 
     int J,K,N;
+
     for (int i=0; i<npaths; i++){
-        o=rnd.Exp(0.1);
+        //o=npaths*(1-pow(rnd.Rannyu(),Espo))-1;
+        o=(int)rnd.Exp(ExpCoef);
+        //o=npaths*rnd.Rannyu();
         o=o%npaths;
+        //cout<<o<<endl;
         newpaths[i]=copyPath(paths[o][0]);
         //newpaths[i]->shortPrint();
 
         rand=rnd.Rannyu();
         if (rand<0.2){
 
-            J=(int)rnd.Exp(ParaArb);
-            K=ParaArb+(int)rnd.Exp(ParaArb);
-            N=(int)rnd.Exp(ParaArb);
+            J=(int)rnd.Exp(ExpCoef);
+            K=(int)rnd.Gauss(ShiftMean, ShiftSig) +(int)rnd.Exp(ExpCoef);
+            N=(int)rnd.Exp(ExpCoef);
             newpaths[i][0].Shift(J,K,N);
             //cout <<J<<" "<<K<<" "<<N<<endl;
             //newpaths[i]->shortPrint();
         }
         else if (rand<0.4) {
-            J=(int)rnd.Exp(ParaArb);
-            K=(int)ParaArb+(int)rnd.Exp(ParaArb);
-            N=(int)rnd.Exp(ParaArb);
+            J=(int)rnd.Exp(ExpCoef);
+            K=(int)rnd.Gauss(ShiftMean, ShiftSig)+(int)rnd.Exp(ExpCoef);
+            N=(int)rnd.Exp(ExpCoef);
             newpaths[i][0].Swap(J,K,N);
         }
         else if (rand<0.6){
-            J=(int)rnd.Exp(ParaArb);
-            K=(int)ParaArb+(int)rnd.Exp(ParaArb);
+            J=(int)rnd.Exp(ExpCoef);
+            K=(int)rnd.Gauss(ShiftMean, ShiftSig)+(int)rnd.Exp(ExpCoef);
             newpaths[i][0].Invert(J,K);
         }
+        
+        else if(rand<0.8){
+            J=(int)rnd.Exp(ExpCoef);
+            K=(int)rnd.Gauss(ShiftMean, ShiftSig)+(int)rnd.Exp(ExpCoef);
+            N=(int)rnd.Exp(ExpCoef);
+            newpaths[i][0].Crossover(paths[N][0],J,K);            
+        }
+        
         //else cout<<"NON HO MUTATO UN CAZZO, in pos: "<<i <<" ho "<<o<<endl;
         
         //if (newpaths[i]->GetLen()==0) {
