@@ -1,3 +1,4 @@
+from time import pthread_getcpuclockid
 from turtle import shape
 from wsgiref.util import shift_path_info
 import matplotlib
@@ -117,7 +118,12 @@ if (not Shape and PrePost):
     fig=plt.figure(figsize=(5, 5))
     filenames=[]
     N=(X.size)
-    for j in range(0,len(Best)):
+    L=len(Best)
+    print(L)
+    for j in range(0,L): 
+        if j%4!=0 or j>400:
+            continue
+        print(j)
         Xord=[]
         Yord=[]
         fig=plt.figure(figsize=(8, 8))
@@ -158,6 +164,10 @@ if (Shape and PrePost):
     filenames=[]
     N=(X.size)
     for j in range(0,len(Best)):
+        if j%4!=0 or j>600:
+            continue
+
+
         Xord=[]
         Yord=[]
         fig=plt.figure(figsize=(8, 8))
