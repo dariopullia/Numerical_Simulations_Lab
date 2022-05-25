@@ -611,68 +611,63 @@ void Manager :: shortPrint(int n){
 
 
 void Manager :: Mutate(){
+
     Path** newpaths= new Path*[npaths];
     int o;
-    double ExpCoef=0.1;
-    double Espo=0.1;
-    double ShiftMean=0;
-    double ShiftSig=5;
+    //double ExpCoef=0.015;
+    double Espo=3.;
+    //double ShiftMean=0;
+    //double ShiftSig=dim/4;
     double rand; 
     int J,K,N;
 
     for (int i=0; i<npaths; i++){
-        //o=npaths*(1-pow(rnd.Rannyu(),Espo))-1;
-        o=(int)rnd.Exp(ExpCoef);
-        //o=npaths*rnd.Rannyu();
-        o=o%npaths;
-        //cout<<o<<endl;
+        o=npaths*(pow(rnd.Rannyu(),Espo));
         newpaths[i]=copyPath(paths[o][0]);
-        //newpaths[i]->shortPrint();
 
         rand=rnd.Rannyu();
-        if (rand<0.2){
+        if (rand<0.15){
 
-            J=(int)rnd.Exp(ExpCoef);
-            K=(int)rnd.Gauss(ShiftMean, ShiftSig) +(int)rnd.Exp(ExpCoef);
-            N=(int)rnd.Exp(ExpCoef);
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);
+            N=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Shift(J,K,N);
             //cout <<J<<" "<<K<<" "<<N<<endl;
             //newpaths[i]->shortPrint();
+            
         }
-        else if (rand<0.4) {
-            J=(int)rnd.Exp(ExpCoef);
-            K=(int)rnd.Gauss(ShiftMean, ShiftSig)+(int)rnd.Exp(ExpCoef);
-            N=(int)rnd.Exp(ExpCoef);
+        else if (rand<0.3) {
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);
+            N=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Swap(J,K,N);
         }
-        else if (rand<0.6){
-            J=(int)rnd.Exp(ExpCoef);
-            K=(int)rnd.Gauss(ShiftMean, ShiftSig)+(int)rnd.Exp(ExpCoef);
+        else if (rand<0.45){
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Invert(J,K);
         }
         
         else if(rand<0.8){
-            J=(int)rnd.Exp(ExpCoef);
-            K=(int)rnd.Gauss(ShiftMean, ShiftSig)+(int)rnd.Exp(ExpCoef);
-            N=(int)rnd.Exp(ExpCoef);
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);;
+            N=npaths*(pow(rnd.Rannyu(),Espo));
+            N=N%npaths;
             newpaths[i][0].Crossover(paths[N][0],J,K);            
         }
-        
-        //else cout<<"NON HO MUTATO UN CAZZO, in pos: "<<i <<" ho "<<o<<endl;
-        
-        //if (newpaths[i]->GetLen()==0) {
-        //    break;
-        //}
+        else if (rand<0.85){
 
+            newpaths[i]=CreateRandomPath();
+        }
     }
-
-    //delete paths;
-
     paths=newpaths;
+
 }
 
 
+
 void Manager :: SaveBest(int n){
+    double appo=0;
 
     ofstream Bests;
     Bests.open(dir+"Bests.dat",ios::app);
@@ -686,8 +681,14 @@ void Manager :: SaveBest(int n){
         pos=pos->GetNext();
         }
     
-    Bests<<paths[i][0].GetLen()<<endl;
+    Bests<<paths[i][0].GetLen()<<" ";//endl;
     }
+
+    for(int j=0; j<npaths/2;j++){
+        appo+=paths[j][0].GetLen();
+    }
+    appo=appo/(npaths/2);
+    Bests<<appo<<endl;
 
     Bests.close();
 }

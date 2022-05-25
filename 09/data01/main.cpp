@@ -9,7 +9,7 @@ using namespace std;
 
 
 int main (int argc, char *argv[]){
-    Manager Manager(34);
+    Manager Manager(100);
     Manager.SetShape(1);//0 Circ, 1 Square
     Manager.CreateRegion(); 
     Manager.SaveRegion();
@@ -26,7 +26,7 @@ int main (int argc, char *argv[]){
     
     cout<<"--------------------Pre Mutazione---------------"<<endl;
     
-    for (int i=0; i<100;i++){
+    for (int i=0; i<1000;i++){
     Manager.Mutate();
     Manager.TestPopulation();
     Manager.RankPopulation();
