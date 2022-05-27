@@ -32,7 +32,7 @@ public:
 
   double GetX(){return X;};
   double GetY(){return Y;};
-  double GetID(){return ID;};
+  int GetID(){return ID;};
 
   void SetNext(Town* t) {Next=t;};
   void SetPrevious(Town* t){Previous =t;};
@@ -125,6 +125,7 @@ public:
   void CreateRegionSquare();
   Path* CreateRandomPath();
   void CreatePopulation();
+  void DestroyPopulation();
   void TestPopulation();
   void RankPopulation();
   void mergesort(Path **v, int low, int high);

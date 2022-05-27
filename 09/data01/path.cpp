@@ -46,10 +46,29 @@ Path :: Path(){
     len=0;
 }
 Path :: ~Path(){
-    
-    Dispose();
+    //Town *current=start->GetPrevious();
+    //Town *prev=current->GetPrevious();
+    int i=0;
+    start->GetPrevious()->SetNext(NULL);
+    for (Town* current = start, *Next; current;)
+    {
+        i++;
+        Next = current->GetNext();
+        
+        delete current;
+        //cout<<"cc "<<Next<<endl;
+        current = Next;
+        
+    }
+    //Dispose();
+    //cout<<"wow "<<i<<endl;
 
 }//IMPO
+
+
+
+
+
 
 void Path :: Dispose (){
 while(!(start->GetID()==0)){
@@ -551,6 +570,17 @@ void Manager :: CreatePopulation(){
 }
 
 
+void Manager :: DestroyPopulation(){
+    
+
+    for (int i=0; i<npaths; i++){
+    delete paths[i];
+    }
+    //delete [] paths;
+}
+
+
+
 Path* Manager :: copyPath(Path p){
     Path* np=new Path;
 
@@ -626,7 +656,7 @@ void Manager :: Mutate(){
         newpaths[i]=copyPath(paths[o][0]);
 
         rand=rnd.Rannyu();
-        if (rand<0.1){
+        if (rand<0.15){
 
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
@@ -636,13 +666,13 @@ void Manager :: Mutate(){
             //newpaths[i]->shortPrint();
             
         }
-        else if (rand<0.2) {
+        else if (rand<0.3) {
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Swap(J,K,N);
         }
-        else if (rand<0.3){
+        else if (rand<0.45){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Invert(J,K);
@@ -815,13 +845,18 @@ Town :: Town(){
 }
 
 Town :: ~Town(){
+    
+    /*
+    delete Next;
+    delete Previous;
+    
     Next=NULL;
     Previous=NULL;
     X=0;
     Y=0;
 
     cout<<"distruggo città"<<endl; //Commentare o scommentare questo cout cambia il risultato, follia
-
+    */
 }
 
 
