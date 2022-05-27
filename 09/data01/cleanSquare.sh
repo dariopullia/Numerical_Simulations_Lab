@@ -1,2 +1,2 @@
 rm -rf Square/*.dat
-rm -rf figsSquare/*
+rm -rf figsSquare/*.png

@@ -5,3 +5,4 @@ JUPYTER_NOTEBOOK/
 .vscode/
 ovito/
 *.png
+*copy*

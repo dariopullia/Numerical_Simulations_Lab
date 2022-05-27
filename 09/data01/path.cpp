@@ -626,7 +626,7 @@ void Manager :: Mutate(){
         newpaths[i]=copyPath(paths[o][0]);
 
         rand=rnd.Rannyu();
-        if (rand<0.15){
+        if (rand<0.1){
 
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
@@ -636,13 +636,13 @@ void Manager :: Mutate(){
             //newpaths[i]->shortPrint();
             
         }
-        else if (rand<0.3) {
+        else if (rand<0.2) {
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Swap(J,K,N);
         }
-        else if (rand<0.45){
+        else if (rand<0.3){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Invert(J,K);

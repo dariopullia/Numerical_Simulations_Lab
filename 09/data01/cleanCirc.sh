@@ -1,2 +1,2 @@
 rm -rf Circ/*.dat
-rm -rf figsCirc/*
+rm -rf figsCirc/*.png
