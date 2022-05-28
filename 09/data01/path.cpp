@@ -501,6 +501,32 @@ Path* Manager :: CreateRandomPath(){
     return p;
 }
 
+Path* Manager :: ImportFromOrder(int order[]){
+    Path* p= new Path;
+    p->setDim(dim);
+    
+    p->GetLastTown()->SetX(Xregion[0]);
+    p->GetLastTown()->SetY(Yregion[0]);
+    p->GetLastTown()->SetID(0);
+
+    for (int i=1;i<dim;i++){
+        p->Append(Xregion[order[i]],Yregion[order[i]],order[i]);
+
+    }
+    //p.print();
+    return p;
+}
+
+void Manager :: Import(int v[]){
+
+    int o;
+    double Espo=3.;
+    o=npaths*(pow(rnd.Rannyu(),Espo));
+    //sarebbe da deletare, dio solo sa come
+    paths[o]=ImportFromOrder(v);
+
+}
+
 
 
 Manager :: Manager(int d){
@@ -558,6 +584,41 @@ void Manager :: SetShape(int s){ //0 Circ, 1 Square
         shape=1;
         dir="Square/";
     }
+}
+
+
+void Manager :: LoadMap(string s){ 
+    ifstream map;
+    shape=-1;
+    dir=s+"/";
+    map.open(s+".dat");
+    double appo;
+    int conta=0;
+
+    map >> appo;
+    map >> appo;    
+
+    while (! map.eof()){
+        conta++;
+
+        map >> appo;
+        map >> appo;
+    }
+    
+    delete [] Xregion;
+    delete [] Yregion;
+    dim=conta;
+    Xregion=new double[conta];
+    Yregion=new double[conta];
+
+    map.clear();
+    map.seekg(0,ios::beg);
+    for(int i=0; i<conta; i++){
+        map >> Xregion[i];
+        map >> Yregion[i];
+    }
+
+    map.close();
 }
 
 
@@ -644,6 +705,25 @@ void Manager :: shortPrint(int n){
 }
 
 
+
+void Manager :: GetGoodOrder(int* v){
+
+    int o;
+    double Espo=3.;
+    Town* pos;
+    o=npaths*(pow(rnd.Rannyu(),Espo));
+    //sarebbe da deletare, dio solo sa come
+    pos=paths[o]->GetStart();
+
+    for (int i=0; i<dim;i++){
+        v[i]=pos->GetID();
+        pos=pos->GetNext();
+    }
+}
+
+
+
+
 void Manager :: Mutate(){
 
     Path** newpaths= new Path*[npaths];
@@ -667,7 +747,7 @@ void Manager :: Mutate(){
         rand=rnd.Rannyu();
         //cout<<"ss "<<rand<<endl;
 
-        if (rand<0.15){
+        if (rand<0.1){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
@@ -676,13 +756,13 @@ void Manager :: Mutate(){
             //newpaths[i]->shortPrint();
             
         }
-        else if (rand<0.3) {
+        else if (rand<0.2) {
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Swap(J,K,N);
         }
-        else if (rand<0.45){
+        else if (rand<0.3){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Invert(J,K);

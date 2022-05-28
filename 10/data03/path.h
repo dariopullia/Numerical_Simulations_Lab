@@ -32,7 +32,7 @@ public:
 
   double GetX(){return X;};
   double GetY(){return Y;};
-  double GetID(){return ID;};
+  int GetID(){return ID;};
 
   void SetNext(Town* t) {Next=t;};
   void SetPrevious(Town* t){Previous =t;};
@@ -84,7 +84,7 @@ public:
     void Swap(int, int, int);
     void Invert(int,int);
     void Shift(int, int,int);
-    void Crossover(Path, int, int);
+    void Crossover(Path*, int, int);
     void Fix();
 
 
@@ -123,16 +123,17 @@ public:
   void LoadMap(string);
   void SetRandomComb(int n) {rnd.SetPrimesComb(n);};
   void ExtendDir(string s){dir=dir+s+"/";};
-
   int GetDim(){return dim;};
+
 
   void CreateRegionCirc();
   void CreateRegionSquare();
-
   Path* CreateRandomPath();
   Path* ImportFromOrder(int v[]);
   void Import(int v[]);
+
   void CreatePopulation();
+  void DestroyPopulation();
   void TestPopulation();
   void RankPopulation();
   void mergesort(Path **v, int low, int high);
@@ -143,7 +144,7 @@ public:
   void GetGoodOrder(int*);
 
   void Try();
-  Path* copyPath(Path);
+  Path* copyPath(Path*);
 
   void Mutate();
   void SaveBest(int);

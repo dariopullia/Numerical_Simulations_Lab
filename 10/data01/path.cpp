@@ -46,10 +46,30 @@ Path :: Path(){
     len=0;
 }
 Path :: ~Path(){
-    
-    Dispose();
+    //Town *current=start->GetPrevious();
+    //Town *prev=current->GetPrevious();
+    //int i=0;
+    //cout<<"CC "<<this<<" "<<this->GetDim()<<endl;
+    start->GetPrevious()->SetNext(NULL);
+    for (Town* current = start, *Next; current;)
+    {
+        dim--;
+        Next = current->GetNext();
+        
+        delete current;
+        //cout<<"cc "<<Next<<endl;
+        current = Next;
+        
+    }
+    //Dispose();
+    //cout<<"wow "<<i<<endl;
 
 }//IMPO
+
+
+
+
+
 
 void Path :: Dispose (){
 while(!(start->GetID()==0)){
@@ -159,6 +179,7 @@ void Path :: Fix(){
 //----------------------------GENETIC TRANSFORMATIONS----------------------------------
 
 void Path :: Swap(int A, int B, int n){
+    //cout<<this<<endl;
     int appo;
 
     Town* pos=start;
@@ -334,11 +355,13 @@ void Path :: Shift(int A, int B, int n){
 }
 
 
-void Path :: Crossover(Path p, int A, int B){
+void Path :: Crossover(Path* p, int A, int B){
+    //p->print();
+
     int appo;
     Town* pos=start;
     Town* ATown;
-    Town* posnew=p.GetStart();
+    Town* posnew=p->GetStart();
 
     if (A>B){
     appo=A;
@@ -430,7 +453,7 @@ void Manager :: Try(){
         //paths[i]->Invert(0,10)
         paths[0]->shortPrint();
         paths[i]->shortPrint();
-        paths[i]->Crossover(paths[0][0],0,0);
+        paths[i]->Crossover(paths[0],0,0);
         paths[i]->MeasureLen();
         paths[i]->shortPrint();
 
@@ -476,6 +499,32 @@ Path* Manager :: CreateRandomPath(){
 
     //p.print();
     return p;
+}
+
+Path* Manager :: ImportFromOrder(int order[]){
+    Path* p= new Path;
+    p->setDim(dim);
+    
+    p->GetLastTown()->SetX(Xregion[0]);
+    p->GetLastTown()->SetY(Yregion[0]);
+    p->GetLastTown()->SetID(0);
+
+    for (int i=1;i<dim;i++){
+        p->Append(Xregion[order[i]],Yregion[order[i]],order[i]);
+
+    }
+    //p.print();
+    return p;
+}
+
+void Manager :: Import(int v[]){
+
+    int o;
+    double Espo=3.;
+    o=npaths*(pow(rnd.Rannyu(),Espo));
+    //sarebbe da deletare, dio solo sa come
+    paths[o]=ImportFromOrder(v);
+
 }
 
 
@@ -537,6 +586,7 @@ void Manager :: SetShape(int s){ //0 Circ, 1 Square
     }
 }
 
+
 void Manager :: LoadMap(string s){ 
     ifstream map;
     shape=-1;
@@ -575,7 +625,6 @@ void Manager :: LoadMap(string s){
 
 
 
-
 void Manager :: CreatePopulation(){
     paths = new Path*[npaths];
     for (int i=0; i<npaths; i++){
@@ -586,23 +635,34 @@ void Manager :: CreatePopulation(){
 }
 
 
-Path* Manager :: copyPath(Path p){
+void Manager :: DestroyPopulation(){
+    
+
+    for (int i=0; i<npaths; i++){
+    delete paths[i];
+    }
+    //delete [] paths;
+}
+
+
+
+Path* Manager :: copyPath(Path* p){
+    
     Path* np=new Path;
+    np->setDim(p->GetDim());
+    np->setLen(p->GetLen());
 
-    np->setDim(p.GetDim());
-    np->setLen(p.GetLen());
-
-    Town* pos=p.GetStart();
+    Town* pos=p->GetStart();
     np->GetLastTown()->SetX(Xregion[0]);
     np->GetLastTown()->SetY(Yregion[0]);
     np->GetLastTown()->SetID(0);
     pos=pos->GetNext();
-    while (pos->GetNext()->GetID()!=0){
 
+    while (pos->GetNext()->GetID()!=0){
         np->Append(pos->GetX(), pos->GetY(),pos->GetID());
         pos=pos->GetNext();
-        //np->shortPrint();
 
+        //np->shortPrint();
     }
     np->Append(pos->GetX(), pos->GetY(),pos->GetID());
 
@@ -645,9 +705,31 @@ void Manager :: shortPrint(int n){
 }
 
 
+
+void Manager :: GetGoodOrder(int* v){
+
+    int o;
+    double Espo=3.;
+    Town* pos;
+    o=npaths*(pow(rnd.Rannyu(),Espo));
+    //sarebbe da deletare, dio solo sa come
+    pos=paths[o]->GetStart();
+
+    for (int i=0; i<dim;i++){
+        v[i]=pos->GetID();
+        pos=pos->GetNext();
+    }
+}
+
+
+
+
 void Manager :: Mutate(){
 
     Path** newpaths= new Path*[npaths];
+    //cout<<"ss "<<newpaths<<endl;
+    //cout<<"ss "<<paths<<endl;
+
     int o;
     //double ExpCoef=0.015;
     double Espo=3.;
@@ -658,11 +740,14 @@ void Manager :: Mutate(){
 
     for (int i=0; i<npaths; i++){
         o=npaths*(pow(rnd.Rannyu(),Espo));
-        newpaths[i]=copyPath(paths[o][0]);
+        //paths[o][0].print();
+        //cout<<"Cooooooooooooooo--------------------------"<<endl;
+        newpaths[i]=copyPath(paths[o]);
 
         rand=rnd.Rannyu();
-        if (rand<0.15){
+        //cout<<"ss "<<rand<<endl;
 
+        if (rand<0.1){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
@@ -671,13 +756,13 @@ void Manager :: Mutate(){
             //newpaths[i]->shortPrint();
             
         }
-        else if (rand<0.3) {
+        else if (rand<0.2) {
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Swap(J,K,N);
         }
-        else if (rand<0.45){
+        else if (rand<0.3){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             newpaths[i][0].Invert(J,K);
@@ -688,13 +773,16 @@ void Manager :: Mutate(){
             K=(int)rnd.Rannyu(0,dim);;
             N=npaths*(pow(rnd.Rannyu(),Espo));
             N=N%npaths;
-            newpaths[i][0].Crossover(paths[N][0],J,K);            
+            
+            newpaths[i][0].Crossover(paths[N],J,K);            
         }
         else if (rand<0.85){
 
             newpaths[i]=CreateRandomPath();
         }
     }
+    //cout<<"lolololololololololololololololololololololo"<<endl;
+    DestroyPopulation();
     paths=newpaths;
 
 }
@@ -850,13 +938,17 @@ Town :: Town(){
 }
 
 Town :: ~Town(){
+    
+    
+    
     Next=NULL;
     Previous=NULL;
+    /*
     X=0;
     Y=0;
 
     cout<<"distruggo città"<<endl; //Commentare o scommentare questo cout cambia il risultato, follia
-
+    */
 }
 
 

@@ -120,10 +120,18 @@ public:
   void SetNPaths(int n ){npaths=n;}
   void CreateRegion(); 
   void SetShape(int); //0 Circ, 1 Square
+  void LoadMap(string);
+  void SetRandomComb(int n) {rnd.SetPrimesComb(n);};
+  void ExtendDir(string s){dir=dir+s+"/";};
+  int GetDim(){return dim;};
+
 
   void CreateRegionCirc();
   void CreateRegionSquare();
   Path* CreateRandomPath();
+  Path* ImportFromOrder(int v[]);
+  void Import(int v[]);
+
   void CreatePopulation();
   void DestroyPopulation();
   void TestPopulation();
@@ -133,6 +141,7 @@ public:
   void print();
   void shortPrint();
   void shortPrint(int);
+  void GetGoodOrder(int*);
 
   void Try();
   Path* copyPath(Path*);

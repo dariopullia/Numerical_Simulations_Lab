@@ -14,7 +14,7 @@ int main (int argc, char *argv[]){
     int size, rank;
     Random random;
     int nchange;
-    int npaths=200;
+    int npaths=1000;
     int ntowns=10;
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -44,8 +44,8 @@ int main (int argc, char *argv[]){
    
     //cout<<"--------------------Pre Mutazione---------------"<<endl;
     
-    for (int i=0; i<1000;i++){
-        if(i%10==0){
+    for (int i=0; i<2000;i++){
+        if(i%100==0){
             if (rank==0){
                 nchange=int(random.Exp(1))%npaths;
             }
