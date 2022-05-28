@@ -3,8 +3,6 @@ CFLAGS = -Wall -O3 --std=c++11
 
 
 
-esegui: main.exe
-	./main.exe
 
 esegui_para: a.out
 	mpiexec -np 4 ./a.out

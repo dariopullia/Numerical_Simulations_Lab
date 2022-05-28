@@ -521,7 +521,7 @@ void Manager :: Import(int v[]){
 
     int o;
     double Espo=3.;
-    o=npaths*(pow(rnd.Rannyu(),Espo));
+    o=npaths-1 -npaths*(pow(rnd.Rannyu(),Espo));
     //sarebbe da deletare, dio solo sa come
     paths[o]=ImportFromOrder(v);
 

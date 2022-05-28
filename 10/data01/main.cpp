@@ -12,19 +12,23 @@ using namespace std;
 int main (int argc, char *argv[]){
 
     int size, rank;
+    Random random;
+    int npaths=500;
+    int ntowns=10;
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     
-    Manager Manager(10);
+
+
+    Manager Manager(ntowns);
     Manager.SetShape(1);//0 Circ, 1 Square
-    Manager.LoadMap("American_capitals"); 
+    Manager.LoadMap("Capoluoghi"); 
     Manager.SaveRegion();
     Manager.SetRandomComb(rank);
     Manager.ExtendDir(to_string(rank));
+    Manager.SetNPaths(npaths);
 
-    Manager.SetNPaths(200);
-    
     Manager.CreatePopulation();
     Manager.TestPopulation();
     Manager.RankPopulation();
@@ -32,7 +36,7 @@ int main (int argc, char *argv[]){
    
     //cout<<"--------------------Pre Mutazione---------------"<<endl;
     
-    for (int i=0; i<500;i++){
+    for (int i=0; i<1500;i++){
     Manager.Mutate();
     Manager.TestPopulation();
     Manager.RankPopulation();
