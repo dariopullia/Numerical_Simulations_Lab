@@ -48,11 +48,12 @@ Path :: Path(){
 Path :: ~Path(){
     //Town *current=start->GetPrevious();
     //Town *prev=current->GetPrevious();
-    int i=0;
+    //int i=0;
+    //cout<<"CC "<<this<<" "<<this->GetDim()<<endl;
     start->GetPrevious()->SetNext(NULL);
     for (Town* current = start, *Next; current;)
     {
-        i++;
+        dim--;
         Next = current->GetNext();
         
         delete current;
@@ -178,6 +179,7 @@ void Path :: Fix(){
 //----------------------------GENETIC TRANSFORMATIONS----------------------------------
 
 void Path :: Swap(int A, int B, int n){
+    //cout<<this<<endl;
     int appo;
 
     Town* pos=start;
@@ -353,11 +355,13 @@ void Path :: Shift(int A, int B, int n){
 }
 
 
-void Path :: Crossover(Path p, int A, int B){
+void Path :: Crossover(Path* p, int A, int B){
+    //p->print();
+
     int appo;
     Town* pos=start;
     Town* ATown;
-    Town* posnew=p.GetStart();
+    Town* posnew=p->GetStart();
 
     if (A>B){
     appo=A;
@@ -449,7 +453,7 @@ void Manager :: Try(){
         //paths[i]->Invert(0,10)
         paths[0]->shortPrint();
         paths[i]->shortPrint();
-        paths[i]->Crossover(paths[0][0],0,0);
+        paths[i]->Crossover(paths[0],0,0);
         paths[i]->MeasureLen();
         paths[i]->shortPrint();
 
@@ -581,23 +585,23 @@ void Manager :: DestroyPopulation(){
 
 
 
-Path* Manager :: copyPath(Path p){
+Path* Manager :: copyPath(Path* p){
+    
     Path* np=new Path;
+    np->setDim(p->GetDim());
+    np->setLen(p->GetLen());
 
-    np->setDim(p.GetDim());
-    np->setLen(p.GetLen());
-
-    Town* pos=p.GetStart();
+    Town* pos=p->GetStart();
     np->GetLastTown()->SetX(Xregion[0]);
     np->GetLastTown()->SetY(Yregion[0]);
     np->GetLastTown()->SetID(0);
     pos=pos->GetNext();
-    while (pos->GetNext()->GetID()!=0){
 
+    while (pos->GetNext()->GetID()!=0){
         np->Append(pos->GetX(), pos->GetY(),pos->GetID());
         pos=pos->GetNext();
-        //np->shortPrint();
 
+        //np->shortPrint();
     }
     np->Append(pos->GetX(), pos->GetY(),pos->GetID());
 
@@ -643,6 +647,9 @@ void Manager :: shortPrint(int n){
 void Manager :: Mutate(){
 
     Path** newpaths= new Path*[npaths];
+    //cout<<"ss "<<newpaths<<endl;
+    //cout<<"ss "<<paths<<endl;
+
     int o;
     //double ExpCoef=0.015;
     double Espo=3.;
@@ -653,11 +660,14 @@ void Manager :: Mutate(){
 
     for (int i=0; i<npaths; i++){
         o=npaths*(pow(rnd.Rannyu(),Espo));
-        newpaths[i]=copyPath(paths[o][0]);
+        //paths[o][0].print();
+        //cout<<"Cooooooooooooooo--------------------------"<<endl;
+        newpaths[i]=copyPath(paths[o]);
 
         rand=rnd.Rannyu();
-        if (rand<0.15){
+        //cout<<"ss "<<rand<<endl;
 
+        if (rand<0.15){
             J=(int)rnd.Rannyu(0,dim);
             K=(int)rnd.Rannyu(0,dim);
             N=(int)rnd.Rannyu(0,dim);
@@ -683,13 +693,16 @@ void Manager :: Mutate(){
             K=(int)rnd.Rannyu(0,dim);;
             N=npaths*(pow(rnd.Rannyu(),Espo));
             N=N%npaths;
-            newpaths[i][0].Crossover(paths[N][0],J,K);            
+            
+            newpaths[i][0].Crossover(paths[N],J,K);            
         }
         else if (rand<0.85){
 
             newpaths[i]=CreateRandomPath();
         }
     }
+    //cout<<"lolololololololololololololololololololololo"<<endl;
+    DestroyPopulation();
     paths=newpaths;
 
 }
@@ -846,12 +859,11 @@ Town :: Town(){
 
 Town :: ~Town(){
     
-    /*
-    delete Next;
-    delete Previous;
+    
     
     Next=NULL;
     Previous=NULL;
+    /*
     X=0;
     Y=0;
 

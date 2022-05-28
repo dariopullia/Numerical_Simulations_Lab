@@ -84,7 +84,7 @@ public:
     void Swap(int, int, int);
     void Invert(int,int);
     void Shift(int, int,int);
-    void Crossover(Path, int, int);
+    void Crossover(Path*, int, int);
     void Fix();
 
 
@@ -135,7 +135,7 @@ public:
   void shortPrint(int);
 
   void Try();
-  Path* copyPath(Path);
+  Path* copyPath(Path*);
 
   void Mutate();
   void SaveBest(int);

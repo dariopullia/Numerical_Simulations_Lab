@@ -9,19 +9,23 @@ using namespace std;
 
 
 int main (int argc, char *argv[]){
-    Manager Manager(1000);
+    Manager Manager(100);
     Manager.SetShape(1);//0 Circ, 1 Square
     Manager.CreateRegion(); 
     Manager.SaveRegion();
         
-    Manager.SetNPaths(5000);
-
-    for (int i=0; i<10; i++){
+    Manager.SetNPaths(1000);
+    Manager.CreatePopulation();
+    /*
+    for (int i=0; i<50; i++){
         Manager.CreatePopulation();
+        Manager.Mutate();
+
         Manager.DestroyPopulation();
     }
-
-    /*
+    */
+      
+    
     Manager.TestPopulation();
     Manager.RankPopulation();
     
@@ -47,7 +51,7 @@ int main (int argc, char *argv[]){
     Manager.SaveBestCoord();
 
     //Manager.Try();
-    */
-
+    
+    
     return 0;
 }
