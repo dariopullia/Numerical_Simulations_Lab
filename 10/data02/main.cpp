@@ -15,7 +15,7 @@ int main (int argc, char *argv[]){
     int size, rank;
     Random random;
     int nchange;
-    int npaths=500;
+    int npaths=200;
     int ntowns=10;
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -25,7 +25,7 @@ int main (int argc, char *argv[]){
 
     Manager Manager(ntowns);
     Manager.SetShape(1);//0 Circ, 1 Square
-    Manager.LoadMap("Capoluoghi"); 
+    Manager.LoadMap("American_capitals"); 
     Manager.SaveRegion();
     Manager.SetRandomComb(rank);
     Manager.ExtendDir(to_string(rank));
@@ -45,8 +45,8 @@ int main (int argc, char *argv[]){
    
     //cout<<"--------------------Pre Mutazione---------------"<<endl;
     
-    for (int i=0; i<1500;i++){
-        if(i%100==0){
+    for (int i=0; i<500;i++){
+        if(i%40==0){
             if (rank==0){
             nchange=npaths*(pow(random.Rannyu(),3));
                 //nchange=5;
