@@ -7,14 +7,17 @@
 _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 *****************************************************************
 *****************************************************************/
+using namespace std;
 
 #ifndef __ISING__
 #define __ISING__
 
 //Random numbers
 #include "../../rangen/random.h"
+#include <string>
 Random rnd;
-
+string ismetro;
+string hstring;
 //parameters, observables
 const int m_props=1000;
 double zeta;
@@ -46,6 +49,7 @@ void Accumulate(void);
 void Averages(int);
 void Move(int);
 void ConfFinal(void);
+void PrintLast(int);
 void Measure(void);
 double Boltzmann(int, int);
 int Pbc(int);

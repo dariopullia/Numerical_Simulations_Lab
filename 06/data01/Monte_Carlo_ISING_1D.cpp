@@ -13,26 +13,39 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 #include <ostream>
 #include <cmath>
 #include <iomanip>
+#include <string>
+
 #include "Monte_Carlo_ISING_1D.h"
 
 using namespace std;
 
 int main()
 { 
-  Input(); //Inizialization
-  for(int iblk=1; iblk <= nblk; ++iblk) //Simulation
-  {
-    Reset(iblk);   //Reset block averages
-    for(int istep=1; istep <= nstep; ++istep)
-    {
-      Move(metro);
-      Measure();
-      Accumulate(); //Update block averages
-    }
-    Averages(iblk);   //Print results for current block
-  }
-  ConfFinal(); //Write final configuration
 
+  for (int j=0; j<11;j++){
+    Input(); //Inizialization
+
+    temp=0.5+j*0.15;
+    beta = 1.0/temp;
+    cout << "Temperature = " << temp << endl;
+
+
+    for(int iblk=1; iblk <= nblk; ++iblk) //Simulation
+    {
+      Reset(iblk);   //Reset block averages
+
+      for(int istep=1; istep <= nstep; ++istep)
+      {
+        Move(metro);
+        Measure();
+        Accumulate(); //Update block averages
+      }
+      Averages(iblk);   //Print results for current block
+      if (iblk==nblk) PrintLast(iblk);   //Print results for current block
+
+    }
+    ConfFinal(); //Write final configuration
+  }
   return 0;
 }
 
@@ -63,8 +76,13 @@ void Input(void)
 
   ReadInput >> h;
   cout << "External field = " << h << endl << endl;
-    
+  hstring=to_string(h);  
+
+
   ReadInput >> metro; // if=1 Metropolis else Gibbs
+
+  if (metro) ismetro="metropolis/";
+  else ismetro="gibbs/";
 
   ReadInput >> nblk;
 
@@ -115,32 +133,31 @@ void Move(int metro)
     {
       snew=-s[o];
 
-      deltaE=-2*Boltzmann(snew, o);
+      deltaE=2*Boltzmann(snew, o);
 
       if (deltaE<0){
-          s[o]=snew;        
+          s[o]=snew;     
+          accepted++;   
       }else{
           if (rnd.Rannyu()<exp(-deltaE*beta)){
-              s[o]=snew;        
+              s[o]=snew;      
+              accepted++;  
           }
       }
-
+      //cout<<"eccomi"<<endl;
+      attempted++;
     }
     else //Gibbs sampling
-    {/*
-      deltaE=-2*Boltzmann(1, o);
-      if (s[o]==1){
-        //p=\/(1+exp(walker[iu]));
+    {
+      snew=-s[o];
 
-
-      }else{
-        p=exp(walker[iu]-2*Boltzmann(-1, o))/zeta;
-
-
-      }
-
-    */
-
+      deltaE=-2*Boltzmann(snew, o);
+      if(rnd.Rannyu() < 1.0/(1.0+exp(-beta*deltaE))){
+        s[o]=snew;
+        accepted++;
+      }       
+      attempted++;
+   
     }
   }
 }
@@ -155,21 +172,23 @@ void Measure()
 {
   int bin;
   double u = 0.0, m = 0.0;
-  double c, x;
+  double c=0., x, H=0.;
 
 //cycle over spins
   for (int i=0; i<nspin; ++i)
   {
-    u += -J * s[i] * s[Pbc(i+1)] - 0.5 * h * (s[i] + s[Pbc(i+1)]);
+    H= -J * s[i] * s[Pbc(i+1)] - 0.5 * h * (s[i] + s[Pbc(i+1)]);
+
+    u += H;
+    c+= H*H;
     m += s[i];
   }
 
-
-
   walker[iu] = u;
-  walker[ic] = beta*beta*((u*u/nspin)-u*u/(nspin*nspin));
+  walker[ic] = beta*beta*double((c/nspin)-u*u/double(nspin*nspin));
+  //cout<<walker[ic]<<endl;
   walker[im] = m;
-  walker[ix] = beta*m*m/nspin;
+  walker[ix] = beta*m*m;
 
 
 
@@ -215,10 +234,10 @@ void Averages(int iblk) //Print results for current block
     
    ofstream Ene, Heat, Mag, Chi;
 
-    cout << "Block number " << iblk << endl;
-    cout << "Acceptance rate " << accepted/attempted << endl << endl;
+    //cout << "Block number " << iblk << endl;
+    //cout << "Acceptance rate " << accepted/attempted << endl << endl;
     
-    Ene.open("output.ene.0",ios::app);
+    Ene.open(ismetro+"output.ene."+hstring,ios::app);
     stima_u = blk_av[iu]/blk_norm/(double)nspin; //Energy
     glob_av[iu]  += stima_u;
     glob_av2[iu] += stima_u*stima_u;
@@ -227,15 +246,15 @@ void Averages(int iblk) //Print results for current block
     Ene.close(); 
 
 
-    Heat.open("output.heat.0",ios::app);
-    stima_u = blk_av[ic]/blk_norm/(double)nspin; //Heat
+    Heat.open(ismetro+"output.heat."+hstring,ios::app);
+    stima_c = blk_av[ic]/blk_norm; //Heat
     glob_av[ic]  += stima_c;
     glob_av2[ic] += stima_c*stima_c;
     err_c=Error(glob_av[ic],glob_av2[ic],iblk);
     Heat << iblk <<  " " << stima_c << " " << glob_av[ic]/(double)iblk <<  " " << err_c << endl;
     Heat.close(); 
 
-    Mag.open("output.mag.0",ios::app);
+    Mag.open(ismetro+"output.mag."+hstring,ios::app);
     stima_m = blk_av[im]/blk_norm/(double)nspin; //Magnetization
     glob_av[im]  += stima_m;
     glob_av2[im] += stima_m*stima_m;
@@ -243,11 +262,41 @@ void Averages(int iblk) //Print results for current block
     Mag << iblk <<  " " << stima_m << " " << glob_av[im]/(double)iblk <<  " " << err_m << endl;
     Mag.close(); 
 
-    Chi.open("output.chi.0",ios::app);
+    Chi.open(ismetro+"output.chi."+hstring,ios::app);
     stima_x = blk_av[ix]/blk_norm/(double)nspin; //Magnetic susceptibility
     glob_av[ix]  += stima_x;
     glob_av2[ix] += stima_x*stima_x;
     err_x=Error(glob_av[ix],glob_av2[ix],iblk);
+    Chi << iblk <<  " " << stima_x << " " << glob_av[ix]/(double)iblk <<  " " << err_x << endl;
+    Chi.close(); 
+
+
+    //cout << "----------------------------" << endl << endl;
+}
+
+
+void PrintLast(int iblk) //Print results for current block
+{
+    
+   ofstream Ene, Heat, Mag, Chi;
+
+    cout << "Block number " << iblk << endl;
+    cout << "Acceptance rate " << accepted/attempted << endl << endl;
+    
+    Ene.open(ismetro+"last_output.ene."+hstring,ios::app);
+    Ene << iblk <<  " " << stima_u << " " << glob_av[iu]/(double)iblk <<  " " << err_u << endl;
+    Ene.close(); 
+
+
+    Heat.open(ismetro+"last_output.heat."+hstring,ios::app);
+    Heat << iblk <<  " " << stima_c << " " << glob_av[ic]/(double)iblk <<  " " << err_c << endl;
+    Heat.close(); 
+
+    Mag.open(ismetro+"last_output.mag."+hstring,ios::app);
+    Mag << iblk <<  " " << stima_m << " " << glob_av[im]/(double)iblk <<  " " << err_m << endl;
+    Mag.close(); 
+
+    Chi.open(ismetro+"last_output.chi."+hstring,ios::app);
     Chi << iblk <<  " " << stima_x << " " << glob_av[ix]/(double)iblk <<  " " << err_x << endl;
     Chi.close(); 
 
