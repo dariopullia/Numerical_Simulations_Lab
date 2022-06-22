@@ -6,3 +6,5 @@ JUPYTER_NOTEBOOK/
 ovito/
 *.png
 *copy*
+*.h5
+11/data02/NN*.py

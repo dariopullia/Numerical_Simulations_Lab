@@ -9,12 +9,11 @@ using namespace std;
 
 
 int main (int argc, char *argv[]){
-    Manager Manager(100);
-    Manager.SetShape(1);//0 Circ, 1 Square
+    Manager Manager(34);
+    Manager.SetShape(0);//0 Circ, 1 Square
     Manager.CreateRegion(); 
     Manager.SaveRegion();
-        
-    Manager.SetNPaths(1000);
+    Manager.SetNPaths(500);
     Manager.CreatePopulation();
     /*
     for (int i=0; i<50; i++){
@@ -37,19 +36,18 @@ int main (int argc, char *argv[]){
     
     cout<<"--------------------Pre Mutazione---------------"<<endl;
     
-    for (int i=0; i<800;i++){
-    Manager.Mutate();
+    for (int i=0; i<300;i++){
+    Manager.Mutate(0.1,0.5);//Primo parametro per le mutazioni, secondo per il crossover, sempre un 5% di full random
     Manager.TestPopulation();
     Manager.RankPopulation();
     Manager.SaveBest(1);
-
     }
     
     cout<<"--------------------Post Mutazione---------------"<<endl;
     
     Manager.shortPrint(3);
     Manager.SaveBestCoord();
-
+    Manager.SaveAll();
     //Manager.Try();
     
     

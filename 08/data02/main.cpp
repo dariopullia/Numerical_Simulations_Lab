@@ -99,6 +99,7 @@ int main (int argc, char *argv[]){
    ofstream outMuSig("data02_MuSig.dat");
    ofstream outMuSigFinal("data02_MuSigFinal.dat");
    ofstream outMuSigInstant("data02_MuSigInstant.dat");
+   ofstream outEnergyOPT("data02_EnergyOPT.dat");   
 
    double beta=1;
    double mu, mu2, sig, sig2;
@@ -184,7 +185,7 @@ int main (int argc, char *argv[]){
             tent++;
             musum +=oldmetroPSI.getMu();
             sigsum +=oldmetroPSI.getSig();
-            outMuSigInstant<<oldmetroPSI.getMu()<<" "<<oldmetroPSI.getSig()<<endl;
+            outMuSigInstant<<oldmetroPSI.getMu()<<" "<<oldmetroPSI.getSig()<<" "<<oldmetroPSI.getPos()<<endl;
 
          //if (i==0) cout<<sum/j<<" "<< metroPSI.getEnergy()<<" "<<metroPSI.getPos()<<endl;
 
@@ -204,7 +205,37 @@ int main (int argc, char *argv[]){
       cout<<mu<<" "<<error_prog(mu, mu2,N)<<" "<<sig<<" "<<error_prog(sig, sig2,N)<<endl;
 
       outMuSigFinal<<mu<<" "<<error_prog(mu, mu2,N)<<" "<<sig<<" "<<error_prog(sig, sig2,N)<<endl;
-}
+   }
+
+
+   M=100000;
+   N=100;  //numero di blocchi
+   L=M/N;
+   sum; 
+   double E=0; 
+   double E2=0;
+
+   for (int i=0; i<N; i++){
+      sum=0;
+
+      for (int j=0; j<L; j++){
+         //Faccio un passo in modalità uniforme (0) e in modalità gaussiana (1)
+         metroPSI.step_PSI();
+         sum+=metroPSI.getEnergy();
+         //if (i==0) cout<<sum/j<<" "<< metroPSI.getEnergy()<<" "<<metroPSI.getPos()<<endl;
+
+      }
+
+      E=(sum/L+E*(i))/(i+1);
+
+      E2=((sum/L)*(sum/L)+E2*(i))/(i+1);
+      //cout<<E<<" "<<error_prog(E, E2,i)<<endl;
+      cout<<"Acceptance Rate: "<<metroPSI.getAccRate()<<endl;
+
+      outEnergyOPT<<E<<" "<<error_prog(E, E2,i)<<endl;
+
+   }
+
 
 
 

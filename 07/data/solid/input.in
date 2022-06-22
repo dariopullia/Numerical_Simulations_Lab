@@ -1,12 +1,12 @@
 1
-1
-0.8
+0
+1.55
 108
 1.1
 2.2
 0.2
-20
-2000
+500000
+1
 
   ReadInput >> iNVET; 0=MD(NVE) 1=MC(NVT)
   ReadInput >> restart;

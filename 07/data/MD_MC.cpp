@@ -30,10 +30,6 @@ int main(int argc,char* argv[])
     
   Input(); //Inizialization
 
-  for (int i=0; i<10000;i++){
-    Move();
-  }
-  
 
   int nconf = 1;
   for(int iblk=1; iblk <= nblk; iblk++) //Simulation
@@ -415,8 +411,8 @@ void Averages(int iblk) //Print results for current block
    ofstream Epot, Ekin, Etot, Temp, Pres;
    //const int wd=12;
     
-    cout << "Block number " << iblk << endl;
-    cout << "Acceptance rate " << accepted/attempted << endl << endl;
+    //cout << "Block number " << iblk << endl;
+    //cout << "Acceptance rate " << accepted/attempted << endl << endl;
     
     Epot.open(stato+"/output_epot.dat",ios::app);
     Ekin.open(stato+"/output_ekin.dat",ios::app);
@@ -463,7 +459,7 @@ void Averages(int iblk) //Print results for current block
     Pres  << iblk <<  " " << stima_pres << " " << glob_av[ipr]/(double)iblk << " " << err_pres << endl;
 
 
-    cout << "----------------------------" << endl << endl;
+    //cout << "----------------------------" << endl << endl;
 
     Epot.close();
     Ekin.close();

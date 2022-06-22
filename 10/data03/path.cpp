@@ -816,6 +816,26 @@ void Manager :: SaveBest(int n){
     Bests.close();
 }
 
+
+void Manager :: SaveAll(){
+    ofstream Bests;
+    Bests.open(dir+"All.dat");
+    
+    for (int i=0; i<npaths; i++){
+    Town* pos=paths[i][0].GetStart();
+    Bests<<pos->GetID()<<" ";
+    pos=pos->GetNext();
+    while(!(pos->GetID()==0)){
+        Bests<<pos->GetID()<<" ";
+        pos=pos->GetNext();
+        }
+    
+    Bests<<paths[i][0].GetLen()<<endl;
+    }
+    Bests.close();
+}
+
+
 void Manager :: SaveBestCoord(){
     ofstream Region;
     Region.open(dir+"BestCoord.dat");

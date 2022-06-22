@@ -1,0 +1,1 @@
+for f in *LFun*; do python3 "$f"; done
