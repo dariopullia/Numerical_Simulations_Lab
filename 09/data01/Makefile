@@ -4,14 +4,14 @@ CFLAGS = -Wall -O3 --std=c++11
 esegui: main.exe
 	./main.exe
 
-main.exe : main.o /home/dario/Uni_ubu/lsn/rangen/random.o path.o
-	$(CC) /home/dario/Uni_ubu/lsn/rangen/random.o main.o path.o -o main.exe
+main.exe : main.o ../../rangen/random.o path.o
+	$(CC) ../../rangen/random.o main.o path.o -o main.exe
 main.o : main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
-/home/dario/Uni_ubu/lsn/rangen/random.o : /home/dario/Uni_ubu/lsn/rangen/random.cpp /home/dario/Uni_ubu/lsn/rangen/random.h
-	$(CC) -c /home/dario/Uni_ubu/lsn/rangen/random.cpp -o /home/dario/Uni_ubu/lsn/rangen/random.o $(CFLAGS)
+../../rangen/random.o : ../../rangen/random.cpp ../../rangen/random.h
+	$(CC) -c ../../rangen/random.cpp -o ../../rangen/random.o $(CFLAGS)
 clean :
-	rm /home/dario/Uni_ubu/lsn/rangen/*.o main.exe seed.out
+	rm ../../rangen/*.o main.exe seed.out
 
 path.o : path.cpp path.h
 	$(CC) -c path.cpp -o path.o $(CFLAGS)

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "/home/dario/Uni_ubu/lsn/rangen/random.h"
+#include "../../rangen/random.h"
 
 using namespace std;
 

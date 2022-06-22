@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "/home/dario/Uni_ubu/lsn/rangen/random.h"
+#include "../../rangen/random.h"
 
 using namespace std;
 
@@ -27,33 +27,8 @@ double chi2(int* n, int L, int N){
 
 
 int main (int argc, char *argv[]){
-   //-----------------------------NUMERI CASUALI INIZIALIZZAZIONE------------------
    Random rnd;
-   int seed[4];
-   int p1, p2;
-   ifstream Primes("/home/dario/Uni_ubu/lsn/rangen/Primes");
-   if (Primes.is_open()){
-      Primes >> p1 >> p2 ;
-   } else cerr << "PROBLEM: Unable to open Primes" << endl;
-   Primes.close();
-
-   ifstream input("/home/dario/Uni_ubu/lsn/rangen/seed.in");
-   string property;
-   if (input.is_open()){
-      while ( !input.eof() ){
-         input >> property;
-         if( property == "RANDOMSEED" ){
-            input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
-            rnd.SetRandom(seed,p1,p2);
-         }
-      }
-      input.close();
-   } else cerr << "PROBLEM: Unable to open seed.in" << endl;
-   //-----------------------------FINE INIZIALIZZAZIONE------------------
-   
-   
    ofstream out("data01.dat");
-
 
    double tiro;
    int M=100000;
@@ -69,14 +44,14 @@ int main (int argc, char *argv[]){
    int* n= new int[N];
 
 
-   for (int i=0; i<N;i++){
+   for (int i=0; i<N;i++){ //Ciclo sui blocchi
       sum=0;
       ssum=0;
       for (int k=0; k<N; k++){
          n[k]=0;
       }
 
-      for (int j=0; j<L;j++){
+      for (int j=0; j<L;j++){ //Ciclo in ogni blocco
          tiro=rnd.Rannyu();
          sum+=tiro;         
          ssum+=((tiro-0.5)*(tiro-0.5));

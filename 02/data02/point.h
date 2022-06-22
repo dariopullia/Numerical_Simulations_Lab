@@ -2,7 +2,7 @@
 #include <fstream>
 #include <cmath>
 #include <cstdlib>
-#include "/home/dario/Uni_ubu/lsn/rangen/random.h"
+#include "../../rangen/random.h"
 
 
 #ifndef __Point__

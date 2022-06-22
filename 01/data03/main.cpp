@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "/home/dario/Uni_ubu/lsn/rangen/random.h"
+#include "../../rangen/random.h"
 
 using namespace std;
 
@@ -51,31 +51,9 @@ double extractyAR(double r, Random* rnd){
 
 
 int main (int argc, char *argv[]){
-   //-----------------------------NUMERI CASUALI INIZIALIZZAZIONE------------------
-   Random rnd;
-   int seed[4];
-   int p1, p2;
-   ifstream Primes("/home/dario/Uni_ubu/lsn/rangen/Primes");
-   if (Primes.is_open()){
-      Primes >> p1 >> p2 ;
-   } else cerr << "PROBLEM: Unable to open Primes" << endl;
-   Primes.close();
 
-   ifstream input("/home/dario/Uni_ubu/lsn/rangen/seed.in");
-   string property;
-   if (input.is_open()){
-      while ( !input.eof() ){
-         input >> property;
-         if( property == "RANDOMSEED" ){
-            input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
-            rnd.SetRandom(seed,p1,p2);
-         }
-      }
-      input.close();
-   } else cerr << "PROBLEM: Unable to open seed.in" << endl;
-   //-----------------------------FINE INIZIALIZZAZIONE------------------
-   
-   
+   Random rnd;
+
    ofstream out("data03.dat");
 
    int M=1000000;
