@@ -6,7 +6,7 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-seed=0
+seed=2
 np.random.seed(seed) # fix random seed
 tf.random.set_random_seed(seed)
 
@@ -101,22 +101,20 @@ batch_size = 32
 #epochs
 
 # create the deep neural net
-path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool)
+path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs)
+print(path_to_file)
 model_CNN= keras.models.load_model(filepath=path_to_file)
 
-
-#ma posso continuare l'allenamento!!!!!
-epochs_eff=epochs
 
 # train CNN and store training info in history
 history = model_CNN.fit(X_train, Y_train,
           batch_size=batch_size,
-          epochs=epochs_eff,
+          epochs=epochs,
           verbose=1,
           validation_data=(X_test, Y_test))
 
 
 
 
-save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool)
+save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs+epochs)
 model_CNN.save(filepath=save_model_path, include_optimizer=True)

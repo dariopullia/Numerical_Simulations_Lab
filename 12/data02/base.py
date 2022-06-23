@@ -48,13 +48,16 @@ def create_CNN():
     model.add(keras.layers.Conv2D(10, kernel_size=(5, 5),
                      activation='relu',
                      input_shape=input_shape))
+
+    for i in range(NMaxPool):
+        model.add(keras.layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding="same",))
+
     for i in range(NConvLayers):
         model.add(keras.layers.Conv2D(5, kernel_size=(3, 3),
                      activation='relu',
                      input_shape=input_shape))
 
-    for i in range(NMaxPool):
-        model.add(keras.layers.MaxPooling2D(pool_size=(2, 2), strides=None, padding="same",))
+
     for i in range(NAvgPool):
         model.add(keras.layers.AveragePooling2D(pool_size=(2, 2), strides=None, padding="same",))
 
@@ -117,5 +120,5 @@ history = model_CNN.fit(X_train, Y_train,
 
 
 
-save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool)
+save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs)
 model_CNN.save(filepath=save_model_path, include_optimizer=True)
