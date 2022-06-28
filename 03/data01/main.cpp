@@ -85,9 +85,9 @@ int main (int argc, char *argv[]){
       sum_put_step=0;
 
       for (int j=0; j<L; j++){
-         ST_direct=S0*exp((r-0.5*sigma*sigma)*T+ sigma*(rnd.Gauss(0,1))*sqrt(T));
+         ST_direct=S0*exp((r-0.5*sigma*sigma)*T+ sigma*(rnd.Gauss(0,1))*sqrt(T)); //Valutazione diretta
          ST_steps=S0;
-         for (int k=0; k<n_steps;k++){
+         for (int k=0; k<n_steps;k++){ //Valutazione discreta
             delta_t= (double) T/n_steps;
             ST_steps=ST_steps*exp((r-0.5*sigma*sigma)*delta_t+ sigma*(rnd.Gauss(0,1))*sqrt(delta_t));
          }
@@ -96,10 +96,7 @@ int main (int argc, char *argv[]){
          sum_call_step+=exp(-r*T)*max(0., ST_steps-K);
          sum_put_step+=exp(-r*T)*max(0.,K-ST_steps);
 
-
       }
-
-
       call_price_dir=(sum_call_dir/L+call_price_dir*(i))/(i+1);
       call_price_dir2=((sum_call_dir/L)*(sum_call_dir/L)+call_price_dir2*(i))/(i+1);
 
