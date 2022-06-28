@@ -46,7 +46,7 @@ int main(int argc,char* argv[])
     }
     Averages(iblk);   //Print results for current block
   }
-  //ConfFinal(); //Write final configuration
+  ConfFinal(); //Write final configuration
 
   return 0;
 }
