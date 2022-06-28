@@ -101,7 +101,7 @@ batch_size = 32
 #epochs
 
 # create the deep neural net
-path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs)
+path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, 21)
 print(path_to_file)
 model_CNN= keras.models.load_model(filepath=path_to_file)
 
@@ -116,5 +116,5 @@ history = model_CNN.fit(X_train, Y_train,
 
 
 
-save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs+epochs)
+save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, 21+epochs)
 model_CNN.save(filepath=save_model_path, include_optimizer=True)

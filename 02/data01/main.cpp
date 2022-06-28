@@ -41,31 +41,8 @@ double Inv_Cumu_Cos( double x){ //Inv della cumulativa della funzione stessa. Vo
 
 
 int main (int argc, char *argv[]){
-   //-----------------------------NUMERI CASUALI INIZIALIZZAZIONE------------------
    Random rnd;
-   int seed[4];
-   int p1, p2;
-   ifstream Primes("../../rangen/Primes");
-   if (Primes.is_open()){
-      Primes >> p1 >> p2 ;
-   } else cerr << "PROBLEM: Unable to open Primes" << endl;
-   Primes.close();
-
-   ifstream input("../../rangen/seed.in");
-   string property;
-   if (input.is_open()){
-      while ( !input.eof() ){
-         input >> property;
-         if( property == "RANDOMSEED" ){
-            input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
-            rnd.SetRandom(seed,p1,p2);
-         }
-      }
-      input.close();
-   } else cerr << "PROBLEM: Unable to open seed.in" << endl;
-   //-----------------------------FINE INIZIALIZZAZIONE------------------
-   
-   
+  
    ofstream out("data01.dat");
    int M=1000000;
    int N=100;  //numero di blocchi
@@ -80,11 +57,12 @@ int main (int argc, char *argv[]){
 
    double sum=0, sum_lin,sum_cos;
    double tiro=0;
+   //Classica procedura di data-blocking
    for (int i=0;i<N;i++){
       sum=0;
       sum_lin=0;
       sum_cos=0;      
-      for (int j=0; j<L; j++){
+      for (int j=0; j<L; j++){ // Faccio imp. sampling in tre modi: Uniforme, lineare e seguendo la funzione stessa.
          tiro=rnd.Rannyu();
          sum+=fun(tiro);
          sum_lin+=fun(Inv_Cumu_Linear(tiro))/(2-2*Inv_Cumu_Linear(tiro));

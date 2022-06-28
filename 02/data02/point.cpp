@@ -42,14 +42,20 @@ void Point :: DiscreteRandomStep(double r){
 }
 
 void Point :: ContinuumRandomStep(double r){
-
-    double theta, phi;
-    theta=rnd.Rannyu(0,M_PI);
-    phi=rnd.Rannyu(0,2*M_PI);
-
-    this->x+=r*sin(theta)*cos(phi) ;
-    this->y+=r*sin(theta)*sin(phi) ;
-    this->z+=r*cos(theta);
+    double dx,dy,dz,dr;
+    do{
+      dx=rnd.Rannyu(-r,r);
+      dy=rnd.Rannyu(-r,r);
+      dz=rnd.Rannyu(-r,r);
+      dr=dx*dx+dy*dy+dz*dz;
+    }while (dr>r*r);
+    dx=dx*r/sqrt(dr);
+    dy=dy*r/sqrt(dr);
+    dz=dz*r/sqrt(dr);       
+    //cout<<dx<<" "<<dy<<" "<<dz<<" "<<endl;
+    this->x+=dx;
+    this->y+=dy;
+    this->z+=dz;
 
   return;
 }

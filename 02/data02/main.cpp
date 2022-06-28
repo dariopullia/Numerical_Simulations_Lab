@@ -8,12 +8,12 @@
 using namespace std;
 
 
-double error_prog(double AV, double AV2, int n){
+double error_prog_sqrt(double AV, double AV2, int n){
    if (n==0){
       return 0;
    }
    else{
-      return sqrt((AV2-AV*AV)/n);
+      return 0.5*sqrt(AV)*sqrt((AV2-AV*AV)/n)/AV;
    };
 }
 double chi2(int* n, int L, int N){
@@ -38,9 +38,9 @@ int main (int argc, char *argv[]){
    ofstream out("data02.dat");
    int M=10000; //numero di punti ubriachi
    int N=100;  //numero di blocchi, non serve ma è buona prassi
-   int L=M/N; //numero di ubriachi per blocco
+   int L=M/N; //numero di punti per blocco
    double a=1; //lunghezza del passo
-   int n_steps=100; //numero di passi per ubriaco
+   int n_steps=100; //numero di passi per punto
    double RDisc[n_steps], RCont[n_steps],RDisc2[n_steps], RCont2[n_steps];
    double RDisc_prog[n_steps], RCont_prog[n_steps],RDisc2_prog[n_steps], RCont2_prog[n_steps];
    for (int i=0; i<n_steps; i++){//porto tutti i contatori a 0
@@ -88,7 +88,8 @@ int main (int argc, char *argv[]){
 
    out<<0<<" "<<0<<" "<<0<<" "<<0<<endl; //Aggiungo il primo punto, che è 0 al passo zeresimo
    for (int i=0; i<n_steps; i++){ //riempio il file di output
-      out<<sqrt(RDisc_prog[i])<<" "<<(error_prog(RDisc_prog[i], RDisc2_prog[i],N))<<" "<<sqrt(RCont_prog[i])<<" "<<(error_prog(RCont_prog[i],RCont2_prog[i],N))<<endl;
+      out<<sqrt(RDisc_prog[i])<<" "<<(error_prog_sqrt(RDisc_prog[i], RDisc2_prog[i],N))<<" "<<sqrt(RCont_prog[i])<<" "<<(error_prog_sqrt(RCont_prog[i],RCont2_prog[i],N))<<endl;
+      //out<<(RDisc_prog[i])<<" "<<(error_prog(RDisc_prog[i], RDisc2_prog[i],N))<<" "<<(RCont_prog[i])<<" "<<(error_prog(RCont_prog[i],RCont2_prog[i],N))<<endl;
 
    }
 
