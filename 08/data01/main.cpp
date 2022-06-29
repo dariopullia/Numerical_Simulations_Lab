@@ -19,8 +19,6 @@ double error_prog(double AV, double AV2, int n){
 
 
 
-
-
 int main (int argc, char *argv[]){
    Metropolis metroPSI;
 
