@@ -24,17 +24,18 @@ int main (int argc, char *argv[]){
 
    ofstream out("data01.dat");
    ofstream out2("data01_3d.dat");
+   //int M=10000; // Per vedere bene l'effetto della mancata EQ
    int M=10000000;
    int N=100;  //numero di blocchi
-   //int M=1000;
-   //int N=1;  //numero di blocchi
+   //int M=1000; // scommentare per misurare l'autocorrelazione
+   //int N=1;  //
 
    int L=M/N;
    double sum_100_unif, sum_100_gauss, sum_210_unif, sum_210_gauss; 
    double r_100_unif=0, r_100_gauss=0, r_210_unif=0, r_210_gauss=0; 
    double r2_100_unif=0, r2_100_gauss=0, r2_210_unif=0, r2_210_gauss=0; 
    double * start=new double[3];
-   start[0]=10.0;
+   start[0]=3.0; //Posizione iniziale. 100.0 per apprezzare la differenza
    start[1]=0.0;
    start[2]=0.0;
    //Posiziono i punti alla posizione iniziale e ne imposto il passo
@@ -68,6 +69,7 @@ int main (int argc, char *argv[]){
          sum_210_unif+=metro210_unif.getR();
          sum_210_gauss+=metro210_gauss.getR();
 
+         //if (j%4==0){ //Per vedere il punto spostarsi, scommentare anche qui
          if (j%400==0){ //Estraggo dei punti per il grafico 3D
             start=metro100_gauss.getPos();
             out2<<start[0]<<" "<<start[1]<<" "<<start[2]<<" ";
@@ -90,10 +92,10 @@ int main (int argc, char *argv[]){
 
 
       cout<<"--------------------------------"<<endl;
-      cout<<"Accemptance rate 100 Uniform: "<<metro100_unif.getAccRate()<<endl;
-      cout<<"Accemptance rate 100 Gauss: "<<metro100_gauss.getAccRate()<<endl;
-      cout<<"Accemptance rate 210 Uniform: "<<metro210_unif.getAccRate()<<endl;
-      cout<<"Accemptance rate 210 Gauss: "<<metro210_gauss.getAccRate()<<endl;
+      cout<<"Acc. rate 100 Uniform: "<<metro100_unif.getAccRate()<<endl;
+      cout<<"Acc. rate 100 Gauss: "<<metro100_gauss.getAccRate()<<endl;
+      cout<<"Acc. rate 210 Uniform: "<<metro210_unif.getAccRate()<<endl;
+      cout<<"Acc. rate 210 Gauss: "<<metro210_gauss.getAccRate()<<endl;
       cout<<"--------------------------------"<<endl;
       out<<r_100_unif<<" "<<error_prog(r_100_unif, r2_100_unif,i)<<" "<<r_100_gauss<<" "<<error_prog(r_100_gauss, r2_100_gauss,i)<<" "<<r_210_unif<<" "<<error_prog(r_210_unif, r2_210_unif,i)<<" "<<r_210_gauss<<" "<<error_prog(r_210_gauss, r2_210_gauss,i)<<endl;
    }
