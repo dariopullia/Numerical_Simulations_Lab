@@ -3,7 +3,7 @@ CFLAGS = -Wall -O3 --std=c++11
 
 
 esegui_all: NVE_NVT.exe 
-	./NVE_NVT.exe gas ;	./NVE_NVT.exe solid; ./NVE_NVT.exe liquid
+	bash clean.sh; ./NVE_NVT.exe gas ;	./NVE_NVT.exe solid; ./NVE_NVT.exe liquid
 
 
 gas: NVE_NVT.exe

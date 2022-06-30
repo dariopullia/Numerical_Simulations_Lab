@@ -130,8 +130,8 @@ void Input(void)
   cout << "Read initial configuration" << endl << endl;
   if(restart)
   {
-    ReadConf.open(stato+"/config.out");
-    ReadVelocity.open(stato+"/velocity.out");
+    ReadConf.open("../dataeq/"+stato+"/config.out");
+    ReadVelocity.open("../dataeq/"+stato+"/velocity.out");
     for (int i=0; i<npart; ++i) ReadVelocity >> vx[i] >> vy[i] >> vz[i];
   }
   else 
@@ -372,6 +372,7 @@ void Measure() //Properties measurement
   walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
   walker[ie] = 4.0 * v + kin;  // Total energy;
   walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol*npart)+tailC_P;  // Pressure with tail corrections;
+  cout<< appo_per_pres/(3.0*vol*npart)<<endl;
   return;
 }
 

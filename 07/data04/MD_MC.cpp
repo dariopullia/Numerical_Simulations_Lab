@@ -135,8 +135,8 @@ void Input(void)
   cout << "Read initial configuration" << endl << endl;
   if(restart)
   {
-    ReadConf.open(mode+stato+"/config.out");
-    ReadVelocity.open(mode+stato+"/velocity.out");
+    ReadConf.open("../dataeq/"+stato+"/config.out");
+    ReadVelocity.open("../dataeq/"+stato+"/velocity.out");
     for (int i=0; i<npart; ++i) ReadVelocity >> vx[i] >> vy[i] >> vz[i];
   }
   else 

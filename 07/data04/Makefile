@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -Wall -O3 --std=c++11
 
 esegui_all: NVE_NVT.exe 
-	./NVE_NVT.exe gas MC;	./NVE_NVT.exe solid MC; ./NVE_NVT.exe liquid MC;	./NVE_NVT.exe gas MD;	./NVE_NVT.exe solid MD; ./NVE_NVT.exe liquid MD 
+	bash clean.sh; ./NVE_NVT.exe gas MC;	./NVE_NVT.exe solid MC; ./NVE_NVT.exe liquid MC;	./NVE_NVT.exe gas MD;	./NVE_NVT.exe solid MD; ./NVE_NVT.exe liquid MD 
 
 
 MC: NVE_NVT.exe 

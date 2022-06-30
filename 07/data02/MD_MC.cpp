@@ -34,6 +34,7 @@ int main(int argc,char* argv[])
   int nconf = 1;
   for(int iblk=1; iblk <= nblk; iblk++) //Simulation
   {
+    if (iblk%10000==0) cout<<iblk<<endl;
     Reset(iblk);   //Reset block averages
     for(int istep=1; istep <= nstep; istep++)
     {
@@ -129,8 +130,8 @@ void Input(void)
   cout << "Read initial configuration" << endl << endl;
   if(restart)
   {
-    ReadConf.open(stato+"/config.out");
-    ReadVelocity.open(stato+"/velocity.out");
+    ReadConf.open("../dataeq/"+stato+"/config.out");
+    ReadVelocity.open("../dataeq/"+stato+"/velocity.out");
     for (int i=0; i<npart; ++i) ReadVelocity >> vx[i] >> vy[i] >> vz[i];
   }
   else 
