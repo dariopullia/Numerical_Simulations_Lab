@@ -100,9 +100,10 @@ int main (int argc, char *argv[]){
    ofstream outMuSigFinal("data02_MuSigFinal.dat");
    ofstream outMuSigInstant("data02_MuSigInstant.dat");
    ofstream outEnergyOPT("data02_EnergyOPT.dat");   
+   ofstream outXInstant("data02_XInstant.dat");
 
    double beta=1;
-   double mu, mu2, sig, sig2;
+   double mu=0, mu2=0, sig=0, sig2=0;
    double musum, sigsum, sum1, sum2;
    double Eprog=1, sigmaEprog=10,E2prog;//Imposto questi valori per entrare nel ciclo
    metroPSI.setMuSig(1, 1);
@@ -185,7 +186,7 @@ int main (int argc, char *argv[]){
             tent++;
             musum +=oldmetroPSI.getMu();
             sigsum +=oldmetroPSI.getSig();
-            outMuSigInstant<<oldmetroPSI.getMu()<<" "<<oldmetroPSI.getSig()<<" "<<oldmetroPSI.getPos()<<endl;
+            outMuSigInstant<<oldmetroPSI.getMu()<<" "<<oldmetroPSI.getSig()<<endl;
 
          //if (i==0) cout<<sum/j<<" "<< metroPSI.getEnergy()<<" "<<metroPSI.getPos()<<endl;
 
@@ -207,6 +208,7 @@ int main (int argc, char *argv[]){
       outMuSigFinal<<mu<<" "<<error_prog(mu, mu2,N)<<" "<<sig<<" "<<error_prog(sig, sig2,N)<<endl;
    }
 
+   metroPSI.setMuSig(mu, sig);
 
    M=100000;
    N=100;  //numero di blocchi
@@ -223,6 +225,7 @@ int main (int argc, char *argv[]){
          metroPSI.step_PSI();
          sum+=metroPSI.getEnergy();
          //if (i==0) cout<<sum/j<<" "<< metroPSI.getEnergy()<<" "<<metroPSI.getPos()<<endl;
+         outXInstant<<metroPSI.getPos()<<endl;
 
       }
 
