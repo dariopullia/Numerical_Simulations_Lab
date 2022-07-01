@@ -360,7 +360,7 @@ void Measure() //Properties measurement
   walker[ik] = kin; // Kinetic energy
   walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
   walker[ie] = 4.0 * v + kin;  // Total energy;
-  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol*npart);  // Pressure;
+  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol);  // Pressure;
   return;
 }
 
