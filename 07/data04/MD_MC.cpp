@@ -113,7 +113,7 @@ void Input(void)
 
   ReadInput >> nstep;
 
-  tailC_U = npart*( 8*M_PI*rho*(pow(rcut,-9)/9-pow(rcut,-3)/3));
+  tailC_U = ( 8*M_PI*rho*(pow(rcut,-9)/9-pow(rcut,-3)/3));
   tailC_P =  npart* 32*M_PI*rho*(pow(rcut,-9)/9-pow(rcut,-3)/6)/vol;
 
 
@@ -376,7 +376,7 @@ void Measure() //Properties measurement
   walker[ik] = kin; // Kinetic energy
   walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
   walker[ie] = 4.0 * v + kin;  // Total energy;
-  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol)+tailC_P*npart;  // Pressure with tail corrections;
+  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol)+tailC_P;  // Pressure with tail corrections;
   return;
 }
 
@@ -473,8 +473,8 @@ void Averages(int iblk) //Print results for current block
       stima_gr = Gr_tot[i]/blk_norm; //G(r)
       glob_av_gr[i] += stima_gr;
       glob_av2_gr[i] += stima_gr*stima_gr;
-      err_gr=Error(glob_av_gr[i],glob_av2_gr[iv],iblk);
-      norm_Gr=rho*npart*4*M_PI*(pow(i*box/200 + box/200,3)-pow(i*box/200 ,3));
+      err_gr=Error(glob_av_gr[i],glob_av2_gr[i],iblk);
+      norm_Gr=rho*npart*4/3*M_PI*(pow(i*box/200 + box/200,3)-pow(i*box/200 ,3));
 
       GR<<' '<< stima_gr/norm_Gr << ' '<< glob_av_gr[i]/double(iblk)/norm_Gr <<' '<<err_gr/norm_Gr;
     }  

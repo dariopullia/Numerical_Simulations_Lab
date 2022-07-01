@@ -107,7 +107,7 @@ void Input(void)
 
   ReadInput >> nstep;
 
-  tailC_U = npart*( 8*M_PI*rho*(pow(rcut,-9)/9-pow(rcut,-3)/3));
+  tailC_U = ( 8*M_PI*rho*(pow(rcut,-9)/9-pow(rcut,-3)/3));
   tailC_P =  npart* 32*M_PI*rho*(pow(rcut,-9)/9-pow(rcut,-3)/6)/vol;
 
 
@@ -367,7 +367,7 @@ void Measure() //Properties measurement
   walker[ik] = kin; // Kinetic energy
   walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
   walker[ie] = 4.0 * v + kin;  // Total energy;
-  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol)+tailC_P*npart;  // Pressure with tail corrections;
+  walker[ipr] =  rho*walker[it] + appo_per_pres/(3.0*vol)+tailC_P;  // Pressure with tail corrections;
   return;
 }
 
