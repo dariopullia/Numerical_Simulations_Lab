@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -Wall -O3 --std=c++11
 
 esegui: main.exe
-	./main.exe
+	bash cleanCirc.sh; bash cleanSquare.sh; ./main.exe 0; ./main.exe 1;
 
 main.exe : main.o ../../rangen/random.o path.o
 	$(CC) ../../rangen/random.o main.o path.o -o main.exe

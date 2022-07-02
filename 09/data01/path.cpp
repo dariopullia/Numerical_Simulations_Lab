@@ -534,7 +534,7 @@ Manager :: Manager(int d){
     npaths=2;
     Xregion = new double [d];
     Yregion = new double [d];
-    rnd.SetPrimesComb(1);
+    rnd.SetPrimesComb(3);
     shape=0;
     dir="Circ/";
 

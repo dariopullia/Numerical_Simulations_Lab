@@ -49,6 +49,7 @@ if (not Shape and not PrePost):
 
 
         plt.plot(Xord,Yord,marker="o",markersize=4,lw=1.3, label="Gen"+str(j)+"    Len: "+str(Best[j][N]))  
+        plt.title('Generazione: '+str(j))
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.ylim([-1.5, 1.5])
@@ -89,6 +90,7 @@ if (Shape and not PrePost):
             Yord.append(Y[int(Best[j][i])])
 
         plt.plot(Xord,Yord,marker="o",markersize=4,lw=1.3, label="Gen"+str(j)+"    Len: "+str(Best[j][N]))  
+        plt.title('Generazione: '+str(j))
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.ylim([-1.5, 1.5])
@@ -135,6 +137,7 @@ if (not Shape and PrePost):
 
 
         plt.plot(Xord,Yord,marker="o",markersize=4,lw=1.3, label="Gen"+str(j)+"    Len: "+str(Best[j][N]))  
+        plt.title('Generazione: '+str(j))
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.ylim([-1.5, 1.5])
@@ -179,6 +182,7 @@ if (Shape and PrePost):
 
 
         plt.plot(Xord,Yord,marker="o",markersize=4,lw=1.3, label="Gen"+str(j)+"    Len: "+str(Best[j][N]))  
+        plt.title('Generazione: '+str(j))
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.ylim([-1.5, 1.5])
