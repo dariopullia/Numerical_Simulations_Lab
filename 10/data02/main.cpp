@@ -14,9 +14,12 @@ int main (int argc, char *argv[]){
 
     int size, rank;
     Random random;
+    random.SetPrimesComb(0);
     int nchange;
-    int npaths=200;
+    int npaths=500;
     int ntowns=10;
+    int nmutations=1500;
+    int migration_freq=nmutations/4 +1;
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -24,8 +27,7 @@ int main (int argc, char *argv[]){
 
 
     Manager Manager(ntowns);
-    Manager.SetShape(1);//0 Circ, 1 Square
-    Manager.LoadMap("American_capitals"); 
+    Manager.LoadMap("Capoluoghi"); 
     Manager.SaveRegion();
     Manager.SetRandomComb(rank);
     Manager.ExtendDir(to_string(rank));
@@ -45,12 +47,13 @@ int main (int argc, char *argv[]){
    
     //cout<<"--------------------Pre Mutazione---------------"<<endl;
     
-    for (int i=0; i<500;i++){
-        if(i%40==0){
+    for (int i=0; i<nmutations;i++){
+        if(i%migration_freq==0){
             if (rank==0){
-            nchange=npaths*(pow(random.Rannyu(),3));
+                //nchange=npaths*(pow(random.Rannyu(),3));
                 //nchange=5;
-
+                nchange=(int)random.Rannyu(npaths/100,npaths/20);
+                //cout<<nchange<<endl;
             }
             MPI_Bcast(&nchange, 1, MPI_INTEGER, 0, MPI_COMM_WORLD);
 
@@ -69,7 +72,7 @@ int main (int argc, char *argv[]){
         }
 
 
-    Manager.Mutate();
+    Manager.Mutate(0.15,0.45);
     Manager.TestPopulation();
     Manager.RankPopulation();
     Manager.SaveBest(1);

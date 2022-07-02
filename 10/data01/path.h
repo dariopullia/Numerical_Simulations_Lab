@@ -147,6 +147,7 @@ public:
   Path* copyPath(Path*);
 
   void Mutate();
+  void Mutate(double, double);
   void SaveBest(int);
   void SaveBestCoord();
   void SaveAll();

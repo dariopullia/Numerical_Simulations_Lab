@@ -723,6 +723,68 @@ void Manager :: GetGoodOrder(int* v){
 
 
 
+void Manager :: Mutate(double p1, double p2){
+    if ((3*p1+p2+0.05)>1) return;
+    Path** newpaths= new Path*[npaths];
+    //cout<<"ss "<<newpaths<<endl;
+    //cout<<"ss "<<paths<<endl;
+
+    int o;
+    //double ExpCoef=0.015;
+    double Espo=2.5;
+    //double ShiftMean=0;
+    //double ShiftSig=dim/4;
+    double rand; 
+    int J,K,N;
+
+    for (int i=0; i<npaths; i++){
+        o=npaths*(pow(rnd.Rannyu(),Espo));
+        //paths[o][0].print();
+        //cout<<"Cooooooooooooooo--------------------------"<<endl;
+        newpaths[i]=copyPath(paths[o]);
+
+        rand=rnd.Rannyu();
+        //cout<<"ss "<<rand<<endl;
+
+        if (rand<p1){
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);
+            N=(int)rnd.Rannyu(0,dim);
+            newpaths[i][0].Shift(J,K,N);
+            //cout <<J<<" "<<K<<" "<<N<<endl;
+            //newpaths[i]->shortPrint();
+            
+        }
+        else if (rand<2*p1) {
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);
+            N=(int)rnd.Rannyu(0,dim);
+            newpaths[i][0].Swap(J,K,N);
+        }
+        else if (rand<3*p1){
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);
+            newpaths[i][0].Invert(J,K);
+        }
+        
+        else if(rand<3*p1+p2){
+            J=(int)rnd.Rannyu(0,dim);
+            K=(int)rnd.Rannyu(0,dim);;
+            N=npaths*(pow(rnd.Rannyu(),Espo));
+            N=N%npaths;
+            
+            newpaths[i][0].Crossover(paths[N],J,K);            
+        }
+        else if (rand<3*p1+p2+0.05){
+
+            newpaths[i]=CreateRandomPath();
+        }
+    }
+    //cout<<"lolololololololololololololololololololololo"<<endl;
+    DestroyPopulation();
+    paths=newpaths;
+
+}
 
 void Manager :: Mutate(){
 
