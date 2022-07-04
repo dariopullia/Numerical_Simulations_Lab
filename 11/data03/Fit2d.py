@@ -1,3 +1,5 @@
+
+from tkinter import YView
 import tensorflow as tf
 from tensorflow import keras
 
@@ -5,35 +7,37 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
 from tensorflow.keras import backend as K
 from tensorflow.keras.utils import get_custom_objects
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
+'''
+NN= PLACEHOLDERNN #Number of Neurons
+NL= PLACEHOLDERNL #Number of Layers
+ActFun= 'PLACEHOLDERAFUN' #ACTIVATION FUNCTION
+LFun = 'PLACEHOLDERLFUN'
+Opt = 'PLACEHOLDEROPT'
+'''
 
-
-
-datasize=int(sys.argv[1])
-epochs=int(sys.argv[2])
-NN= int(sys.argv[1]) #Number of Neurons
-NL= int(sys.argv[2]) #Number of Layers
-ActFun= sys.argv[3] #ACTIVATION FUNCTION
-LFun = sys.argv[4] #Loss function
-Opt = sys.argv[5] #Optimization function
-
+NN= 50 #Number of Neurons
+NL= 10 #Number of Layers
+ActFun= 'relu' #ACTIVATION FUNCTION
+LFun = 'logcosh'
+Opt = 'Adagrad'
+epochs=40
 
 # generate training inputs
 np.random.seed(0)
-x_train = np.random.uniform(-1, 1, 1000)
-x_valid = np.random.uniform(-1, 1, 100)
-x_valid.sort()
-y_target = 4-3*x_valid-2*x_valid**2+3*x_valid**3 # ideal (target) polinomial function
+x_train = np.random.uniform(-1.5, 1.5, (2000,2))
+x_valid = np.random.uniform(-1.5, 1.5, (200,2))
+
+y_target = np.sin(x_valid[0]**2 + x_valid[1]**2)# ideal (target) polinomial function
 
 sigma = 0.5 # noise standard deviation
-y_train = np.random.normal(4-3*x_train-2*x_train**2+3*x_train**3, sigma) # actual measures from which we want to guess regression parameters
-y_valid = np.random.normal(4-3*x_valid-2*x_valid**2+3*x_valid**3, sigma)
-
+y_train = np.random.normal(np.sin(x_train[:,0]**2 + x_train[:,1]**2),sigma) # actual measures from which we want to guess regression parameters
+y_valid = np.random.normal(np.sin(x_valid[:,0]**2 + x_valid[:,1]**2),sigma)
+print(y_valid)
 # compose the NN model
 model = tf.keras.Sequential()
-model.add(Dense(NN, input_shape=(1,), activation=ActFun))
+model.add(Dense(NN, input_shape=(2,), activation=ActFun))
 
 for i in range(NL-1):
     model.add(Dense(NN,activation=ActFun))
@@ -49,8 +53,8 @@ model.compile(optimizer=Opt, loss=LFun, metrics=[LFun])
 # fit the model using training dataset
 # over 10 epochs of 32 batch size each
 # report training progress against validation data
-history = model.fit(x=x_train, y=y_train, 
-          batch_size=100, epochs=30,
+history = model.fit(x=x_train,y= y_train, 
+          batch_size=100, epochs=epochs,
           shuffle=True, # a good idea is to shuffle input before at each epoch
           validation_data=(x_valid, y_valid))
 
