@@ -13,13 +13,13 @@ tf.random.set_random_seed(seed)
 from tensorflow.keras.datasets import mnist
 
 
-epochs=7 #di base ho 7, modifica temporanea
 opt='Adagrad'
 NConvLayers=int(sys.argv[1])
 NDeepLayers=int(sys.argv[2])
 Drop=float(sys.argv[3])
 NMaxPool=int(sys.argv[4])
 NAvgPool=int(sys.argv[5])
+epochs=int(sys.argv[6]) #di base ho 7, modifica temporanea
 
 # input image dimensions
 img_rows, img_cols = 28, 28 # number of pixels 
@@ -63,8 +63,8 @@ def create_CNN():
 
 
     model.add(keras.layers.Flatten())
-    for i in range(NConvLayers):
-        model.add(Dense(40,activation='relu'))
+    for i in range(NDeepLayers):
+        model.add(Dense(100,activation='relu'))
     
     model.add(Dropout(Drop))
     model.add(Dense(10,activation='softmax'))
@@ -108,16 +108,27 @@ model_CNN = create_CNN()
 
 
 #ma posso continuare l'allenamento!!!!!
+path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs)
+
 epochs_eff=epochs
 
-# train CNN and store training info in history
+for i in reversed(range(epochs)):
+    if os.path.exists(path_to_file):
+        epochs_eff-=i+1
+        model_CNN= keras.models.load_model(filepath=path_to_file)
+        print('ESTISTE!!!!', path_to_file, epochs_eff)
+        break
+    else:
+        print('Non esiste fino a ',i+1)
+        path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, i)
+
+
+# train DNN and store training info in history
 history = model_CNN.fit(X_train, Y_train,
           batch_size=batch_size,
           epochs=epochs_eff,
           verbose=1,
           validation_data=(X_test, Y_test))
-
-
 
 
 save_model_path='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, epochs)

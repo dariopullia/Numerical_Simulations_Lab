@@ -101,8 +101,10 @@ batch_size = 32
 #epochs
 
 # create the deep neural net
+'''
 path_to_file='models/model_CNN_NConv_%d_NDeep_%d_Drop_%f_NMax_%d_NAvg_%d_NEp_%d.h5'%(NConvLayers, NDeepLayers, Drop, NMaxPool, NAvgPool, 21)
 print(path_to_file)
+
 model_CNN= keras.models.load_model(filepath=path_to_file)
 
 
@@ -112,6 +114,30 @@ history = model_CNN.fit(X_train, Y_train,
           epochs=epochs,
           verbose=1,
           validation_data=(X_test, Y_test))
+'''
+path_to_file='models/model_OPT_%s_NEp_%d.h5'%(opt, epochs)
+epochs_eff=epochs
+
+for i in reversed(range(epochs)):
+    if os.path.exists(path_to_file):
+        epochs_eff-=i+1
+        model_DNN= keras.models.load_model(filepath=path_to_file)
+        print('ESTISTE!!!!', path_to_file, epochs_eff)
+        break
+    else:
+        print('Non esiste fino a ',i+1)
+        path_to_file='models/model_OPT_%s_NEp_%d.h5'%(opt, i)
+
+
+# train DNN and store training info in history
+history = model_DNN.fit(X_train, Y_train,
+          batch_size=batch_size,
+          epochs=epochs_eff,
+          verbose=1,
+          validation_data=(X_test, Y_test))
+
+
+
 
 
 
