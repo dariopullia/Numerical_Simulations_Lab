@@ -1,6 +1,7 @@
-Nelle sottocartelle utilizzare:
-- 'bash clean.sh' per eliminare i risultati precedenti
-- 'make' per eseguire tutti gli stati
-- 'make gas', 'make liquid', 'make solid' per eseguire singolarmente uno dei tre stati
 
-La procedura per l'equilibrazione comporta eseguire il codice nella cartella 'dataeq', quindi copia-incollare i file config.out e velocity.out nella cartella dello stato corrispondente.
+Per l'esecuzione corretta e immediata dell'esercizio è necessario eseguire in ordine:
+
+- Eseguire `make` nella cartella `dataeq`. Questo comando pulisce i risultati già presenti e crea per ogni stato i file per poter riprendere l'esecuzione.
+- Eseguire `make` nella cartella `data02`. Il programma in questa cartella usa come input i dati nella cartella di equilibrazione e che quindi sono essenziali.
+
+
