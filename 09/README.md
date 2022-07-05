@@ -1,0 +1,4 @@
+Eseguendo il comando `make` si esegue il programma per entrambe le forme con il crossover. Per modificare le probabilità per mutazioni e crossover è necessario modificare i parametri nel `main.cpp` alla funzione `mutate` (è già pronta una linea commentata con i parametri utili senza crossover). Ogni run vengono sovrascritti i file in `/Circ/` e `/Square/` quindi per manetere i risultati è necessario modificarne la posizione o il nome.
+
+
+Per creare la gif è sufficiente eseguire `python Makegif.py 0/1 0/1` dove la prima coppia rappresenta la forma (circolare/quadrata) e la seconda la configurazione (pre/post crossover).
